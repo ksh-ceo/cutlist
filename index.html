@@ -115,7 +115,8 @@ S=Object.assign({},D,S||{});S.set=Object.assign({},D.set,S.set);if(!S.start)S.st
 if(S.clips&&S.clips.length&&!S.projects.length)S.projects=S.clips.map((c,i)=>({id:'o'+i,t:c.t,k:c.k==='pay'?'Заказ':c.k,l:c.l||'',st:3,doneAt:c.d}));
 if(S.money&&S.money.length&&!S.income.length)S.income=S.money.map(a=>({a,s:'',d:dk(new Date())}));
 delete S.clips;delete S.money;
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const persist=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const save=()=>{S._ts=Date.now();persist();schedulePush()};
 function pad(n){return String(n).padStart(2,'0')}
 function dk(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
 const tod=()=>dk(new Date());
@@ -141,7 +142,7 @@ today(){const wd=weekDays(),done=S.projects.filter(p=>p.st===3&&wd.includes(p.do
  const left=Math.max(0,Math.ceil((new Date(dd+'T00:00')-new Date())/864e5)),all=Math.max(1,(new Date(dd+'T00:00')-new Date(S.start+'T00:00'))/864e5),pass=Math.max(2,Math.min(100,(1-left/all)*100));
  const tot=totSec()/3600;let li=0;LV.forEach((l,i)=>{if(tot>=l[0])li=i});const nx=LV[li+1];
  const h=[...Array(7)].map((_,i)=>`<div><i style="height:${Math.min(100,(S.sec[plus(i-6)]||0)/(se.goalMin*60)*100)}%"></i></div>`).join('');
- return `<div class="hero"><div class="lab">МОЯ ЦЕЛЬ</div><div class="dream" data-a="set">${esc(se.dream||'Нажми и напиши, кем ты хочешь стать')}</div>${se.why?`<div class="why" data-a="set">«${esc(se.why)}»</div>`:`<div class="why" data-a="set">Напиши, ради чего ты это делаешь →</div>`}
+ return cloudBox()+`<div class="hero"><div class="lab">МОЯ ЦЕЛЬ</div><div class="dream" data-a="set">${esc(se.dream||'Нажми и напиши, кем ты хочешь стать')}</div>${se.why?`<div class="why" data-a="set">«${esc(se.why)}»</div>`:`<div class="why" data-a="set">Напиши, ради чего ты это делаешь →</div>`}
  <div class="cd"><b>${left}</b><span>дней до цели</span></div><div class="bar"><i style="width:${pass}%"></i></div></div>
  <div class="quote">${Q[new Date().getDate()%Q.length]}</div>
  <div class="pn ${S.timer?'live':''}" id="tpn"><div class="lab"><span>СЕГОДНЯ В МОНТАЖЕ</span><span style="color:var(--rd)">${S.timer?'● ЗАПИСЬ':''}</span></div><div class="big"><span id="tm">0:00:00</span></div><div class="mu2">ЦЕЛЬ ${hm(se.goalMin*60)}</div><div class="bar"><i id="tb"></i></div>
@@ -176,14 +177,43 @@ function remind(){if(late()&&Date.now()-S.notified>3600000){S.notified=Date.now(
 setInterval(tick,1000);setInterval(()=>{banner();remind()},30000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){render();remind()}});
 
+
+const SB_URL='https://ocxcatnnremceusgfdgw.supabase.co',SB_KEY='sb_publishable_QnJtoerVI1TwXF2GtqtlZg_69AS81q-';
+const CL={u:null,st:'не синхронизировано'};
+try{CL.u=JSON.parse(localStorage.getItem('cl_auth'))}catch(e){}
+const setSt=t=>{CL.st=t;const e=$('#cst');if(e)e.textContent=t};
+async function raw(path,o){const r=await fetch(SB_URL+path,Object.assign({},o,{headers:Object.assign({apikey:SB_KEY,'Content-Type':'application/json'},o&&o.headers)}));let j=null;try{j=await r.json()}catch(e){}return{ok:r.ok,s:r.status,j}}
+function keep(j){CL.u={at:j.access_token,rt:j.refresh_token,exp:Date.now()+(j.expires_in||3600)*1000,uid:j.user.id,email:j.user.email};try{localStorage.setItem('cl_auth',JSON.stringify(CL.u))}catch(e){}}
+async function token(){if(!CL.u)return null;if(CL.u.exp-Date.now()<60000){const r=await raw('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:JSON.stringify({refresh_token:CL.u.rt})});
+ if(r.ok&&r.j.access_token)keep(Object.assign({},r.j,{user:r.j.user||{id:CL.u.uid,email:CL.u.email}}));else if(r.s===400||r.s===401){CL.u=null;try{localStorage.removeItem('cl_auth')}catch(e){}}}
+ return CL.u&&CL.u.at}
+async function rest(path,o){const t=await token();if(!t)return null;return raw(path,Object.assign({},o,{headers:Object.assign({Authorization:'Bearer '+t},o&&o.headers)}))}
+async function pull(){if(!CL.u)return;try{setSt('синхронизация…');const r=await rest('/rest/v1/app_state?select=data&user_id=eq.'+CL.u.uid);
+ if(!r){setSt('войди заново');render();return}if(!r.ok){setSt('ошибка '+r.s);return}
+ const row=r.j&&r.j[0];if(!row){await push();return}
+ const c=row.data||{};
+ if((c._ts||0)>(S._ts||0)){if($('#dlg').open)return;S=Object.assign({},D,c);S.set=Object.assign({},D.set,c.set||{});persist();render();setSt('обновлено из облака')}
+ else if((S._ts||0)>(c._ts||0))await push();else setSt('синхронизировано')}catch(e){setSt('нет сети')}}
+async function push(){if(!CL.u)return;try{setSt('сохраняю…');const r=await rest('/rest/v1/app_state?on_conflict=user_id',{method:'POST',headers:{Prefer:'resolution=merge-duplicates'},body:JSON.stringify({user_id:CL.u.uid,data:S,updated_at:new Date().toISOString()})});
+ setSt(r&&r.ok?'синхронизировано':'ошибка '+(r?r.s:'входа'))}catch(e){setSt('нет сети')}}
+let pt;function schedulePush(){clearTimeout(pt);pt=setTimeout(push,1500)}
+async function auth(o){try{const up=o.m==='Создать аккаунт';
+ const r=await raw(up?'/auth/v1/signup':'/auth/v1/token?grant_type=password',{method:'POST',body:JSON.stringify({email:o.e,password:o.p})});
+ if(up&&r.ok&&!(r.j&&r.j.access_token)){alert('Аккаунт создан, но нужно подтвердить почту. Отключи «Confirm email» в Supabase или подтверди письмо и войди.');return}
+ if(!r.ok){alert('Не получилось: '+((r.j&&(r.j.msg||r.j.error_description||r.j.message))||r.s));return}
+ keep(r.j);render();await pull()}catch(e){alert('Нет соединения')}}
+function cloudBox(){return CL.u?`<div class="mu2" style="margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;gap:8px"><span>☁ ${esc(CL.u.email)} · <span id="cst">${esc(CL.st)}</span></span><button class="btn s" data-a="logout">ВЫЙТИ</button></div>`
+ :`<div class="pn" style="padding:18px 22px"><div class="lab" style="margin-bottom:10px">☁ СИНХРОНИЗАЦИЯ</div><div style="margin-bottom:14px;color:var(--mu);font-size:14px">Войди, и данные будут одинаковыми на телефоне и компьютере.</div><button class="btn p s" data-a="login">ВОЙТИ / РЕГИСТРАЦИЯ</button></div>`}
 let cb=null;
 function ask(title,fields,fn){$('#dt').textContent=title;cb=fn;
  $('#df').innerHTML=fields.map(f=>`<label>${f.l}</label>`+(f.o?`<select id="f_${f.k}">${f.o.map(o=>`<option ${o===f.v?'selected':''}>${o}</option>`).join('')}</select>`:`<input id="f_${f.k}" type="${f.t||'text'}" value="${esc(f.v==null?'':f.v)}" placeholder="${f.p||''}">`)).join('');
  $('#dlg').fields=fields;$('#dlg').showModal()}
 $('#cX').onclick=()=>$('#dlg').close();
-$('#cOk').onclick=()=>{const o={};$('#dlg').fields.forEach(f=>o[f.k]=$('#f_'+f.k).value.trim());if(cb(o)===false)return;save();$('#dlg').close();render()};
+$('#cOk').onclick=()=>{const o={};$('#dlg').fields.forEach(f=>o[f.k]=$('#f_'+f.k).value.trim());const r=cb(o);if(r===false)return;if(r!=='skip')save();$('#dlg').close();render()};
 
 const A={
+ login(){ask('Вход в облако',[{k:'e',l:'Почта',t:'email'},{k:'p',l:'Пароль (минимум 6 символов)',t:'password'},{k:'m',l:'Действие',o:['Войти','Создать аккаунт']}],o=>{if(!o.e||o.p.length<6){alert('Введи почту и пароль от 6 символов');return false}auth(o);return 'skip'})},
+ logout(){CL.u=null;try{localStorage.removeItem('cl_auth')}catch(e){}render();return 1},
  fd(){S.focus={d:tod(),t:S.focus.d===tod()?S.focus.t:'',done:!(S.focus.d===tod()&&S.focus.done)}},
  timer(){if(S.timer){S.sec[tod()]=(S.sec[tod()]||0)+runSec();S.timer=null}else S.timer=Date.now()},
  addp(){ask('Новый проект',[{k:'t',l:'Название'},{k:'k',l:'Тип',o:['Практика','Заказ','Для себя','Разбор референса']},{k:'dl',l:'Дедлайн (необязательно)',t:'date'},{k:'l',l:'Ссылка (необязательно)',p:'https://'}],o=>{if(!o.t)return false;S.projects.push({id:Date.now(),t:o.t,k:o.k,dl:o.dl,l:o.l,st:0})})},
@@ -207,6 +237,8 @@ document.addEventListener('input',e=>{if(e.target.id==='ch'||e.target.id==='cr')
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.dataset.add){S[e.target.dataset.add].push(e.target.value.trim()?{t:e.target.value.trim(),done:false}:null);S[e.target.dataset.add]=S[e.target.dataset.add].filter(Boolean);save();render()}});
 $('#file').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{S=Object.assign({},D,JSON.parse(r.result));save();render()}catch(x){alert('Не удалось прочитать файл')}};r.readAsText(f)};
 render();
+pull();setInterval(()=>{if(!document.hidden)pull()},60000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)pull()});
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
 </script>
 </body>
