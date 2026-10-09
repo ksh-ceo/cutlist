@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Cut List">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0a0908">
+<title>CUT LIST</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@400;600;800&family=Playfair+Display:ital,wght@1,600;1,800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0908;--pn:rgba(255,255,255,.035);--ln:rgba(255,255,255,.11);--tx:#f3ece1;--mu:#92897c;--rd:#ff4a3d;--cy:#ffb454;--gl:rgba(255,180,84,.16);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#f4eee3;--pn:rgba(0,0,0,.035);--ln:rgba(0,0,0,.13);--tx:#1d1812;--mu:#7a7061;--rd:#c8321f;--cy:#b8741a;--gl:rgba(255,160,60,.22)}}
+:root[data-theme="light"]{--bg:#f4eee3;--pn:rgba(0,0,0,.035);--ln:rgba(0,0,0,.13);--tx:#1d1812;--mu:#7a7061;--rd:#c8321f;--cy:#b8741a;--gl:rgba(255,160,60,.22)}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 Manrope,-apple-system,"Segoe UI",sans-serif}
+main{max-width:720px;margin:0 auto;padding:26px 18px 130px}
+.m{font-family:"JetBrains Mono",ui-monospace,Consolas,monospace}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px}
+.rec{display:flex;align-items:center;gap:8px;font-weight:700;letter-spacing:.14em;font-size:13px}
+.rec i{width:10px;height:10px;border-radius:50%;background:var(--rd);animation:b 1.4s infinite}
+@keyframes b{50%{opacity:.25}}
+.tc{font-size:28px;font-weight:500}
+#banner{display:none;border:1px solid var(--rd);color:var(--rd);border-radius:12px;padding:14px 16px;margin-bottom:18px;font-weight:600}
+.pn{background:var(--pn);border:1px solid var(--ln);border-radius:16px;padding:24px 22px;margin-bottom:18px}
+.lab{font:500 11px "JetBrains Mono",monospace;letter-spacing:.16em;color:var(--mu);margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
+.big{font:700 52px/1 "JetBrains Mono",monospace}
+.big small{font-size:18px;color:var(--mu);font-weight:500;margin-left:6px}
+.bar{height:6px;background:var(--ln);border-radius:6px;margin:20px 0;overflow:hidden}.bar i{display:block;height:100%;background:var(--cy);width:0}
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:20px}
+.d{height:64px;border:1px solid var(--ln);border-radius:8px;position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:3px;padding:5px}
+.d i{display:block;height:8px;background:var(--cy);border-radius:2px}
+.d em{position:absolute;top:5px;left:6px;font:500 10px "JetBrains Mono",monospace;color:var(--mu);font-style:normal}
+.d.t{border-color:var(--rd)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+.stats div{background:var(--pn);border:1px solid var(--ln);border-radius:14px;padding:16px 12px;text-align:center}
+.stats b{display:block;font:700 28px "JetBrains Mono",monospace}.stats span{font-size:11px;color:var(--mu)}
+.btn{font:700 12px "JetBrains Mono",monospace;letter-spacing:.06em;border:1px solid var(--ln);background:transparent;color:var(--tx);padding:12px 16px;border-radius:10px;cursor:pointer}
+.btn:hover{border-color:var(--cy);color:var(--cy)}
+.btn.p{background:var(--rd);border-color:var(--rd);color:#fff}
+.btn.s{padding:8px 12px;font-size:11px}
+.flex{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.end{justify-content:flex-end;margin-top:22px}
+.it{display:flex;gap:14px;align-items:flex-start;padding:18px 0;border-top:1px solid var(--ln)}
+.it:first-of-type{border-top:0;padding-top:4px}
+.it .g{flex:1;min-width:0;overflow-wrap:anywhere}
+.it.dn .nm{text-decoration:line-through;color:var(--mu)}
+.nm{font-weight:700;font-size:17px}
+.sub{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;align-items:center}
+.chip{font:500 10px "JetBrains Mono",monospace;border:1px solid var(--ln);border-radius:20px;padding:3px 9px;color:var(--mu);letter-spacing:.06em}
+.chip.r{border-color:var(--rd);color:var(--rd)}.chip.c{border-color:var(--cy);color:var(--cy)}
+.x{background:none;border:0;color:var(--mu);cursor:pointer;font-size:18px;padding:4px}.x:hover{color:var(--rd)}
+.empty{color:var(--mu);padding:8px 0}
+input,select{font:inherit;background:var(--bg);color:var(--tx);border:1px solid var(--ln);border-radius:10px;padding:13px;width:100%}
+input[type=checkbox]{width:22px;height:22px;margin-top:2px;accent-color:var(--cy)}
+input:focus,select:focus{outline:none;border-color:var(--cy)}
+.add{display:flex;gap:10px;margin-top:16px}
+.hist{display:flex;gap:6px;align-items:flex-end;height:44px;margin-top:22px}
+.hist div{flex:1;background:var(--ln);border-radius:3px;position:relative;height:100%}.hist i{position:absolute;left:0;right:0;bottom:0;background:var(--cy);border-radius:3px}
+.sp{margin-top:26px}
+#nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--pn);border-top:1px solid var(--ln);padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
+#nav button{flex:1;max-width:144px;margin:0 auto;padding:16px 0 14px;background:none;border:0;color:var(--mu);font:700 10px "JetBrains Mono",monospace;letter-spacing:.08em;cursor:pointer;box-shadow:inset 0 2px 0 transparent}
+#nav button.on{color:var(--rd);box-shadow:inset 0 2px 0 var(--rd)}
+dialog{background:var(--pn);color:var(--tx);border:1px solid var(--cy);border-radius:16px;width:min(92vw,420px);padding:26px}
+dialog::backdrop{background:rgba(0,0,0,.6)}
+dialog label{display:block;margin:16px 0 6px;font-size:13px;color:var(--mu)}
+.calc{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+body{background:radial-gradient(900px 520px at 50% -8%,var(--gl),transparent 70%),var(--bg);background-attachment:fixed}
+.pn{border-radius:20px;padding:28px 24px;margin-bottom:20px}
+input,select{background:var(--pn)}
+#nav{background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.serif,.dream,.why,.quote{font-family:"Playfair Display",Georgia,"Times New Roman",serif}
+.hero{padding:10px 0 30px}
+.dream{font-style:italic;font-weight:800;font-size:clamp(32px,9vw,50px);line-height:1.08;cursor:pointer}
+.why{font-style:italic;font-size:18px;line-height:1.5;color:var(--mu);margin-top:16px;cursor:pointer}
+.cd{margin-top:30px;display:flex;align-items:baseline;gap:14px}
+.cd b{font:700 68px/1 "JetBrains Mono",monospace;color:var(--cy);text-shadow:0 0 30px var(--gl)}
+.cd span{color:var(--mu);font-size:14px}
+.quote{border-left:2px solid var(--cy);padding:4px 0 4px 20px;margin:0 0 28px;font-style:italic;font-size:21px;line-height:1.45}
+#tpn .big{font-size:clamp(46px,14vw,78px);text-shadow:0 0 36px var(--gl);letter-spacing:-.02em}
+#tpn.live{border-color:var(--rd);animation:glow 2s ease-in-out infinite}
+@keyframes glow{50%{box-shadow:0 0 44px rgba(255,74,61,.3)}}
+.mu2{color:var(--mu);font:500 12px "JetBrains Mono",monospace;margin-top:8px}
+.go{width:100%;padding:20px;font-size:14px;margin-top:4px;border-radius:14px}
+.sm{font-size:clamp(34px,10vw,50px)!important}
+.lvl{margin-top:12px;color:var(--cy);font-size:14px;font-weight:600}
+</style>
+</head>
+<body>
+<main>
+ <div class="top"><div class="rec m"><i></i>REC · CUT LIST</div><div class="tc m" id="tc">00:00:00</div></div>
+ <div id="banner"></div>
+ <div id="view"></div>
+</main>
+<nav id="nav"></nav>
+<dialog id="dlg"><b id="dt" style="font-size:20px"></b><div id="df"></div>
+ <div class="flex end"><button class="btn" id="cX">ОТМЕНА</button><button class="btn p" id="cOk">СОХРАНИТЬ</button></div></dialog>
+<input type="file" id="file" accept=".json" hidden>
+
+<script>
+const $=s=>document.querySelector(s),KEY='cutlist_v1';
+const ST=['ИДЕЯ','МОНТАЖ','ПРАВКИ','СДАН'],LS=['НАПИСАЛ','ОТВЕТИЛ','СОЗВОН','ЗАКАЗ','ОТКАЗ'];
+const D={projects:[],leads:[],income:[],ideas:[],sec:{},focus:{},timer:null,notified:0,
+ goals:['Собрать 5 роликов в портфолио','Оформить Instagram / TikTok / Behance с работами','Выбрать нишу: Reels, YouTube, стримеры, бизнес','Написать 10 потенциальным заказчикам','Назначить цену за ролик','Первый платный заказ'].map(t=>({t,done:false})),
+ set:{dream:'',dreamDate:'',why:'',clipGoal:3,goalMin:90,remind:'19:00',outGoal:5,monthGoal:30000,rate:500}};
+let S;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+S=Object.assign({},D,S||{});S.set=Object.assign({},D.set,S.set);if(!S.start)S.start=dk(new Date());
+if(S.clips&&S.clips.length&&!S.projects.length)S.projects=S.clips.map((c,i)=>({id:'o'+i,t:c.t,k:c.k==='pay'?'Заказ':c.k,l:c.l||'',st:3,doneAt:c.d}));
+if(S.money&&S.money.length&&!S.income.length)S.income=S.money.map(a=>({a,s:'',d:dk(new Date())}));
+delete S.clips;delete S.money;
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+function pad(n){return String(n).padStart(2,'0')}
+function dk(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
+const tod=()=>dk(new Date());
+const plus=n=>{const d=new Date();d.setDate(d.getDate()+n);return dk(d)};
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+const hm=s=>Math.floor(s/3600)+':'+pad(Math.floor(s%3600/60))+':'+pad(Math.floor(s%60));
+const runSec=()=>S.timer?Math.floor((Date.now()-S.timer)/1000):0;
+const totSec=()=>Object.values(S.sec).reduce((a,b)=>a+b,0)+runSec();
+const todaySec=()=>(S.sec[tod()]||0)+runSec();
+const ws=()=>{const x=new Date();x.setDate(x.getDate()-(x.getDay()+6)%7);return x};
+const weekDays=()=>[...Array(7)].map((_,i)=>{const d=ws();d.setDate(d.getDate()+i);return dk(d)});
+const money=n=>n.toLocaleString('ru-RU')+' ₽';
+const fmtD=d=>d?d.slice(8)+'.'+d.slice(5,7):'';
+let tab='today';
+const TABS=[['today','СЕГОДНЯ'],['proj','ПРОЕКТЫ'],['lead','ЛИДЫ'],['money','ДЕНЬГИ'],['idea','ИДЕИ']];
+const head=(l,b,a)=>`<div class="lab"><span>${l}</span><button class="btn s p" data-a="${a}">${b}</button></div>`;
+function streak(){let n=0,d=new Date();if((S.sec[dk(d)]||0)<600)d.setDate(d.getDate()-1);while((S.sec[dk(d)]||0)>=600){n++;d.setDate(d.getDate()-1)}return n}
+
+const Q=['Тебе 19. Каждый час сейчас работает на тебя через пять лет.','Пока ты листаешь ленту, кто-то монтирует свой первый платный заказ.','Никто не придёт и не скажет «пора». Это решаешь ты.','Один законченный ролик лучше десяти идеальных планов.','Не нужно вдохновение. Просто включи таймер.','Через год ты скажешь спасибо себе за сегодняшние десять минут.','Портфолио строится по одному ролику за раз.','Страшно показывать работу? Покажи. После первого раза станет легче.','Мастера тоже начинали с плохого монтажа.','Сегодняшний ты решает, кем будешь в 25.'];
+const LV=[[0,'Первый кадр'],[5,'Руки привыкают'],[25,'Появляется ритм'],[100,'Своя рука'],[300,'Профессиональный взгляд'],[1000,'Мастер']];
+const V={
+today(){const wd=weekDays(),done=S.projects.filter(p=>p.st===3&&wd.includes(p.doneAt)),f=S.focus.d===tod()?S.focus:{t:'',done:false},se=S.set,dd=se.dreamDate||plus(365);
+ const left=Math.max(0,Math.ceil((new Date(dd+'T00:00')-new Date())/864e5)),all=Math.max(1,(new Date(dd+'T00:00')-new Date(S.start+'T00:00'))/864e5),pass=Math.max(2,Math.min(100,(1-left/all)*100));
+ const tot=totSec()/3600;let li=0;LV.forEach((l,i)=>{if(tot>=l[0])li=i});const nx=LV[li+1];
+ const h=[...Array(7)].map((_,i)=>`<div><i style="height:${Math.min(100,(S.sec[plus(i-6)]||0)/(se.goalMin*60)*100)}%"></i></div>`).join('');
+ return `<div class="hero"><div class="lab">МОЯ ЦЕЛЬ</div><div class="dream" data-a="set">${esc(se.dream||'Нажми и напиши, кем ты хочешь стать')}</div>${se.why?`<div class="why" data-a="set">«${esc(se.why)}»</div>`:`<div class="why" data-a="set">Напиши, ради чего ты это делаешь →</div>`}
+ <div class="cd"><b>${left}</b><span>дней до цели</span></div><div class="bar"><i style="width:${pass}%"></i></div></div>
+ <div class="quote">${Q[new Date().getDate()%Q.length]}</div>
+ <div class="pn ${S.timer?'live':''}" id="tpn"><div class="lab"><span>СЕГОДНЯ В МОНТАЖЕ</span><span style="color:var(--rd)">${S.timer?'● ЗАПИСЬ':''}</span></div><div class="big"><span id="tm">0:00:00</span></div><div class="mu2">ЦЕЛЬ ${hm(se.goalMin*60)}</div><div class="bar"><i id="tb"></i></div>
+  <button class="btn p go" data-a="timer">${S.timer?'■ СТОП':'▶ НАЧАТЬ МОНТАЖ'}</button><div class="hist">${h}</div></div>
+ <div class="pn"><div class="lab">ВЛОЖЕНО В СЕБЯ</div><div class="big sm" id="tot">0:00:00</div><div class="lvl">${LV[li][1]}${nx?` · ещё ${Math.max(1,Math.ceil(nx[0]-tot))} ч до «${nx[1]}»`:''}</div></div>
+ <div class="pn"><div class="lab">ГЛАВНОЕ НА СЕГОДНЯ</div><div class="flex" style="flex-wrap:nowrap"><input type="checkbox" data-a="fd" ${f.done?'checked':''}><input id="foc" value="${esc(f.t)}" placeholder="Одна задача, которая сделает день удачным"></div></div>
+ <div class="pn"><div class="lab">РОЛИКИ НА ЭТОЙ НЕДЕЛЕ</div><div class="big">${done.length}<small>/ ${se.clipGoal}</small></div>
+  <div class="days">${wd.map(d=>{const n=S.projects.filter(p=>p.st===3&&p.doneAt===d).length;return `<div class="d ${d===tod()?'t':''}"><em>${new Date(d+'T12:00').toLocaleDateString('ru-RU',{weekday:'short'}).toUpperCase()}</em>${'<i></i>'.repeat(Math.min(n,4))}</div>`}).join('')}</div></div>
+ <div class="stats"><div><b>${streak()}</b><span>дней подряд</span></div><div><b>${S.projects.filter(p=>p.st===3).length}</b><span>в портфолио</span></div><div><b>${S.leads.filter(l=>wd.includes(l.added)).length}/${se.outGoal}</b><span>контактов</span></div></div>
+ <div class="pn"><div class="lab">НАСТРОЙКИ</div><div class="flex"><button class="btn s" data-a="set">ЦЕЛИ</button><button class="btn s" data-a="notif">🔔 УВЕДОМЛЕНИЯ</button><button class="btn s" data-a="thm">ТЕМА</button><button class="btn s" data-a="exp">КОПИЯ</button><button class="btn s" data-a="imp">ЗАГРУЗИТЬ</button></div></div>`},
+proj(){const a=S.projects.map((p,i)=>[p,i]);const act=a.filter(([p])=>p.st<3).sort((x,y)=>(x[0].dl||'9')>(y[0].dl||'9')?1:-1),dn=a.filter(([p])=>p.st===3).reverse();
+ const row=([p,i])=>`<div class="it"><div class="g"><div class="nm">${p.l?`<a href="${esc(p.l)}" target="_blank" rel="noopener" style="color:inherit">${esc(p.t)}</a>`:esc(p.t)}</div><div class="sub"><span class="chip c">${ST[p.st]}</span><span class="chip">${esc(p.k).toUpperCase()}</span>${p.dl?`<span class="chip ${p.dl<tod()&&p.st<3?'r':''}">ДЕДЛАЙН ${fmtD(p.dl)}</span>`:''}${p.st===3?`<span class="chip">${fmtD(p.doneAt)}</span>`:''}</div>${p.st<3?`<div class="sub"><button class="btn s" data-a="nx" data-l="projects" data-i="${i}">→ ${ST[p.st+1]}</button></div>`:''}</div><button class="x" data-a="del" data-l="projects" data-i="${i}">✕</button></div>`;
+ return `<div class="pn">${head('В РАБОТЕ · '+act.length,'+ ПРОЕКТ','addp')}${act.map(row).join('')||'<div class="empty">Нет активных проектов. Добавь первый, даже учебный.</div>'}</div><div class="pn"><div class="lab">ПОРТФОЛИО · СДАНО ${dn.length}</div>${dn.map(row).join('')||'<div class="empty">Сданные ролики появятся здесь.</div>'}</div>`},
+lead(){const a=S.leads.map((l,i)=>[l,i]).sort((x,y)=>(x[0].fu||'9')>(y[0].fu||'9')?1:-1);
+ return `<div class="pn">${head('ЗАКАЗЧИКИ И КОНТАКТЫ · '+a.length,'+ КОНТАКТ','addl')}${a.map(([l,i])=>`<div class="it"><div class="g"><div class="nm">${esc(l.n)}</div><div class="mu" style="color:var(--mu);font-size:14px">${esc(l.c)}</div><div class="sub"><button class="chip ${l.st===3?'c':l.st===4?'':'r'}" style="background:none;cursor:pointer" data-a="nx" data-l="leads" data-i="${i}">${LS[l.st]} ›</button>${l.st<3&&l.fu?`<span class="chip ${l.fu<=tod()?'r':''}">НАПИСАТЬ ${fmtD(l.fu)}</span><button class="btn s" data-a="fu" data-i="${i}">+3 ДНЯ</button>`:''}</div></div><button class="x" data-a="del" data-l="leads" data-i="${i}">✕</button></div>`).join('')||'<div class="empty">Блогеры, малый бизнес, стримеры, знакомые. Начни с 5 имён.</div>'}</div>
+ <div class="pn"><div class="lab">ИДЕИ, КОМУ НАПИСАТЬ</div><div class="mu" style="color:var(--mu)">Кто часто выкладывает видео, но монтаж слабый? Покажи ему пример его же ролика в твоём монтаже. Это лучше любого «могу смонтировать».</div></div>`},
+money(){const m=tod().slice(0,7),mo=S.income.filter(x=>x.d.startsWith(m)).reduce((s,x)=>s+x.a,0),tot=S.income.reduce((s,x)=>s+x.a,0);
+ return `<div class="pn"><div class="lab">В ЭТОМ МЕСЯЦЕ</div><div class="big" style="font-size:40px">${money(mo)}</div><div class="bar"><i style="width:${Math.min(100,mo/S.set.monthGoal*100)}%"></i></div><div class="flex" style="justify-content:space-between"><span class="chip">ЦЕЛЬ ${money(S.set.monthGoal)}</span><span class="chip">ВСЕГО ${money(tot)}</span></div></div>
+ <div class="pn"><div class="lab">КАЛЬКУЛЯТОР ЦЕНЫ</div><div class="calc"><div><label class="mu" style="font-size:12px;color:var(--mu)">Часов на ролик</label><input id="ch" type="number" value="4"></div><div><label class="mu" style="font-size:12px;color:var(--mu)">₽ за час</label><input id="cr" type="number" value="${S.set.rate}"></div></div><div class="big" style="font-size:32px;margin-top:20px" id="cp"></div></div>
+ <div class="pn">${head('ДОХОД','+ ДОХОД','addm')}${S.income.map((x,i)=>[x,i]).reverse().map(([x,i])=>`<div class="it"><div class="g"><div class="nm m">${money(x.a)}</div><div class="sub"><span class="chip">${fmtD(x.d)}</span><span class="chip">${esc(x.s)||'БЕЗ ПОДПИСИ'}</span></div></div><button class="x" data-a="del" data-l="income" data-i="${i}">✕</button></div>`).join('')||'<div class="empty">Первая запись здесь будет началом.</div>'}</div>`},
+idea(){const list=(k)=>S[k].map((x,i)=>`<div class="it ${x.done?'dn':''}"><input type="checkbox" data-a="tog" data-l="${k}" data-i="${i}" ${x.done?'checked':''}><div class="g nm" style="font-weight:600">${esc(x.t)}</div><button class="x" data-a="del" data-l="${k}" data-i="${i}">✕</button></div>`).join('');
+ return `<div class="pn"><div class="lab">ИДЕИ И РЕФЕРЕНСЫ <span>${S.ideas.filter(x=>x.done).length}/${S.ideas.length}</span></div>${list('ideas')||'<div class="empty">Кидай сюда всё, что захотел повторить.</div>'}<div class="add"><input data-add="ideas" placeholder="Новая идея… и Enter"><button class="btn" data-a="addi" data-k="ideas">+</button></div></div>
+ <div class="pn"><div class="lab">ПУТЬ К ПЕРВЫМ ДЕНЬГАМ <span>${S.goals.filter(x=>x.done).length}/${S.goals.length}</span></div>${list('goals')}<div class="add"><input data-add="goals" placeholder="Свой шаг…"><button class="btn" data-a="addi" data-k="goals">+</button></div></div>`}
+};
+function render(){$('#nav').innerHTML=TABS.map(([k,l])=>`<button class="${k===tab?'on':''}" data-t="${k}">${l}</button>`).join('');$('#view').innerHTML=V[tab]();tick();banner();calc()}
+function tick(){const n=new Date();$('#tc').textContent=pad(n.getHours())+':'+pad(n.getMinutes())+':'+pad(n.getSeconds());const s=todaySec();if($('#tot'))$('#tot').textContent=hm(totSec());if($('#tm')){$('#tm').textContent=hm(s);$('#tb').style.width=Math.min(100,s/(S.set.goalMin*60)*100)+'%'}}
+function calc(){if($('#cp'))$('#cp').textContent=money(Math.round((+$('#ch').value||0)*(+$('#cr').value||0)))}
+const late=()=>{const n=new Date();return pad(n.getHours())+':'+pad(n.getMinutes())>=S.set.remind&&todaySec()<600};
+function banner(){const b=$('#banner');b.style.display=late()?'block':'none';b.textContent='Каждый день без монтажа отодвигает цель. Сядь хотя бы на 10 минут.'}
+function beep(){try{const a=new (window.AudioContext||window.webkitAudioContext)(),o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.frequency.value=740;g.gain.setValueAtTime(.15,a.currentTime);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+.6);o.start();o.stop(a.currentTime+.6)}catch(e){}}
+function remind(){if(late()&&Date.now()-S.notified>3600000){S.notified=Date.now();save();beep();try{if(Notification.permission==='granted')new Notification('Время монтажа',{body:'Ты ещё не садился за проект сегодня'})}catch(e){}}}
+setInterval(tick,1000);setInterval(()=>{banner();remind()},30000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){render();remind()}});
+
+let cb=null;
+function ask(title,fields,fn){$('#dt').textContent=title;cb=fn;
+ $('#df').innerHTML=fields.map(f=>`<label>${f.l}</label>`+(f.o?`<select id="f_${f.k}">${f.o.map(o=>`<option ${o===f.v?'selected':''}>${o}</option>`).join('')}</select>`:`<input id="f_${f.k}" type="${f.t||'text'}" value="${esc(f.v==null?'':f.v)}" placeholder="${f.p||''}">`)).join('');
+ $('#dlg').fields=fields;$('#dlg').showModal()}
+$('#cX').onclick=()=>$('#dlg').close();
+$('#cOk').onclick=()=>{const o={};$('#dlg').fields.forEach(f=>o[f.k]=$('#f_'+f.k).value.trim());if(cb(o)===false)return;save();$('#dlg').close();render()};
+
+const A={
+ fd(){S.focus={d:tod(),t:S.focus.d===tod()?S.focus.t:'',done:!(S.focus.d===tod()&&S.focus.done)}},
+ timer(){if(S.timer){S.sec[tod()]=(S.sec[tod()]||0)+runSec();S.timer=null}else S.timer=Date.now()},
+ addp(){ask('Новый проект',[{k:'t',l:'Название'},{k:'k',l:'Тип',o:['Практика','Заказ','Для себя','Разбор референса']},{k:'dl',l:'Дедлайн (необязательно)',t:'date'},{k:'l',l:'Ссылка (необязательно)',p:'https://'}],o=>{if(!o.t)return false;S.projects.push({id:Date.now(),t:o.t,k:o.k,dl:o.dl,l:o.l,st:0})})},
+ addl(){ask('Новый контакт',[{k:'n',l:'Имя или канал'},{k:'c',l:'Где писать (Instagram, Telegram…)'},{k:'fu',l:'Написать',t:'date',v:plus(1)}],o=>{if(!o.n)return false;S.leads.push({n:o.n,c:o.c,st:0,fu:o.fu,added:tod()})})},
+ addm(){ask('Доход',[{k:'a',l:'Сумма, ₽',t:'number'},{k:'s',l:'От кого / за что'}],o=>{if(!+o.a)return false;S.income.push({a:+o.a,s:o.s,d:tod()})})},
+ set(){const s=S.set;ask('Цели',[{k:'dream',l:'Моя цель одной фразой',v:s.dream,p:'Стать монтажёром, к которому стоит очередь'},{k:'dreamDate',l:'К какой дате',t:'date',v:s.dreamDate||plus(365)},{k:'why',l:'Ради чего я это делаю',v:s.why,p:'Свобода, семья, доказать себе…'},{k:'clipGoal',l:'Роликов в неделю',t:'number',v:s.clipGoal},{k:'goalMin',l:'Минут монтажа в день',t:'number',v:s.goalMin},{k:'remind',l:'Напоминать в',t:'time',v:s.remind},{k:'outGoal',l:'Новых контактов в неделю',t:'number',v:s.outGoal},{k:'monthGoal',l:'Цель дохода в месяц, ₽',t:'number',v:s.monthGoal},{k:'rate',l:'Ставка, ₽/час',t:'number',v:s.rate}],o=>{Object.keys(o).forEach(k=>{if(o[k])S.set[k]=['remind','dream','dreamDate','why'].includes(k)?o[k]:+o[k]})})},
+ nx(e){const a=S[e.l][e.i];if(e.l==='projects'){a.st=Math.min(3,a.st+1);if(a.st===3)a.doneAt=tod()}else a.st=(a.st+1)%5},
+ fu(e){S.leads[e.i].fu=plus(3)},
+ del(e){S[e.l].splice(e.i,1)},tog(e){S[e.l][e.i].done=!S[e.l][e.i].done},
+ addi(e){const i=$('[data-add="'+e.k+'"]');if(i.value.trim()){S[e.k].push({t:i.value.trim(),done:false})}},
+ thm(){const r=document.documentElement;const l=r.dataset.theme?r.dataset.theme==='light':matchMedia('(prefers-color-scheme:light)').matches;r.dataset.theme=l?'dark':'light';return 1},
+ notif(){try{Notification.requestPermission().then(p=>alert(p==='granted'?'Уведомления включены':'Запрещено: останутся баннер и звук'))}catch(e){alert('Браузер не поддерживает уведомления')}return 1},
+ exp(){const a=document.createElement('a');a.href='data:application/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(S));a.download='cutlist-backup.json';a.click();return 1},
+ imp(){$('#file').click();return 1}
+};
+document.addEventListener('click',e=>{const t=e.target.closest('[data-t],[data-a]');if(!t)return;
+ if(t.dataset.t){tab=t.dataset.t;render();scrollTo(0,0);return}
+ const f=A[t.dataset.a];if(!f)return;const r=f({l:t.dataset.l,i:+t.dataset.i,k:t.dataset.k});if(r===1||$('#dlg').open)return;save();render()});
+document.addEventListener('change',e=>{if(e.target.id==='foc'){S.focus={d:tod(),t:e.target.value,done:S.focus.d===tod()&&S.focus.done};save()}});
+document.addEventListener('input',e=>{if(e.target.id==='ch'||e.target.id==='cr')calc()});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.dataset.add){S[e.target.dataset.add].push(e.target.value.trim()?{t:e.target.value.trim(),done:false}:null);S[e.target.dataset.add]=S[e.target.dataset.add].filter(Boolean);save();render()}});
+$('#file').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{S=Object.assign({},D,JSON.parse(r.result));save();render()}catch(x){alert('Не удалось прочитать файл')}};r.readAsText(f)};
+render();
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
+</script>
+</body>
+</html>
