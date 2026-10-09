@@ -146,7 +146,7 @@ today(){const wd=weekDays(),done=S.projects.filter(p=>p.st===3&&wd.includes(p.do
  <div class="cd"><b>${left}</b><span>дней до цели</span></div><div class="bar"><i style="width:${pass}%"></i></div></div>
  <div class="quote">${Q[new Date().getDate()%Q.length]}</div>
  <div class="pn ${S.timer?'live':''}" id="tpn"><div class="lab"><span>СЕГОДНЯ В МОНТАЖЕ</span><span style="color:var(--rd)">${S.timer?'● ЗАПИСЬ':''}</span></div><div class="big"><span id="tm">0:00:00</span></div><div class="mu2">ЦЕЛЬ ${hm(se.goalMin*60)}</div><div class="bar"><i id="tb"></i></div>
-  <button class="btn p go" data-a="timer">${S.timer?'■ СТОП':'▶ НАЧАТЬ МОНТАЖ'}</button><div class="hist">${h}</div></div>
+  <button class="btn p go" data-a="timer">${S.timer?'■ СТОП':'▶ НАЧАТЬ МОНТАЖ'}</button><div class="flex" style="margin-top:12px"><button class="btn s" data-a="tedit">ПРАВИТЬ ВРЕМЯ</button><button class="btn s" data-a="treset">СБРОСИТЬ</button></div><div class="hist">${h}</div></div>
  <div class="pn"><div class="lab">ВЛОЖЕНО В СЕБЯ</div><div class="big sm" id="tot">0:00:00</div><div class="lvl">${LV[li][1]}${nx?` · ещё ${Math.max(1,Math.ceil(nx[0]-tot))} ч до «${nx[1]}»`:''}</div></div>
  <div class="pn"><div class="lab">ГЛАВНОЕ НА СЕГОДНЯ</div><div class="flex" style="flex-wrap:nowrap"><input type="checkbox" data-a="fd" ${f.done?'checked':''}><input id="foc" value="${esc(f.t)}" placeholder="Одна задача, которая сделает день удачным"></div></div>
  <div class="pn"><div class="lab">РОЛИКИ НА ЭТОЙ НЕДЕЛЕ</div><div class="big">${done.length}<small>/ ${se.clipGoal}</small></div>
@@ -212,6 +212,9 @@ $('#cX').onclick=()=>$('#dlg').close();
 $('#cOk').onclick=()=>{const o={};$('#dlg').fields.forEach(f=>o[f.k]=$('#f_'+f.k).value.trim());const r=cb(o);if(r===false)return;if(r!=='skip')save();$('#dlg').close();render()};
 
 const A={
+ treset(){if(!confirm('Сбросить время за сегодня до 0:00:00?'))return 1;S.sec[tod()]=0;if(S.timer)S.timer=Date.now()},
+ tedit(){ask('Время за сегодня',[{k:'t',l:'Всего за сегодня (ч:мм:сс, например 1:30:00)',v:hm(todaySec()),p:'1:30:00'}],o=>{const m=o.t.split(':').map(Number);if(!o.t||m.length>3||m.some(x=>isNaN(x)||x<0)){alert('Формат: ч:мм:сс, например 1:30:00');return false}
+  const sec=m.length===3?m[0]*3600+m[1]*60+m[2]:m.length===2?m[0]*3600+m[1]*60:m[0]*60;S.sec[tod()]=Math.max(0,sec-runSec())})},
  login(){ask('Вход в облако',[{k:'e',l:'Почта',t:'email'},{k:'p',l:'Пароль (минимум 6 символов)',t:'password'},{k:'m',l:'Действие',o:['Войти','Создать аккаунт']}],o=>{if(!o.e||o.p.length<6){alert('Введи почту и пароль от 6 символов');return false}auth(o);return 'skip'})},
  logout(){CL.u=null;try{localStorage.removeItem('cl_auth')}catch(e){}render();return 1},
  fd(){S.focus={d:tod(),t:S.focus.d===tod()?S.focus.t:'',done:!(S.focus.d===tod()&&S.focus.done)}},
