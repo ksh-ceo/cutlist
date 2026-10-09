@@ -109,7 +109,7 @@ const $=s=>document.querySelector(s),KEY='cutlist_v1';
 const ST=['ИДЕЯ','МОНТАЖ','ПРАВКИ','СДАН'],LS=['НАПИСАЛ','ОТВЕТИЛ','СОЗВОН','ЗАКАЗ','ОТКАЗ'];
 const D={projects:[],leads:[],income:[],ideas:[],sec:{},focus:{},timer:null,notified:0,
  goals:['Собрать 5 роликов в портфолио','Оформить Instagram / TikTok / Behance с работами','Выбрать нишу: Reels, YouTube, стримеры, бизнес','Написать 10 потенциальным заказчикам','Назначить цену за ролик','Первый платный заказ'].map(t=>({t,done:false})),
- set:{dream:'',dreamDate:'',why:'',clipGoal:3,goalMin:90,remind:'19:00',outGoal:5,monthGoal:30000,rate:500}};
+ set:{cur:'BYN (Br)',dream:'',dreamDate:'',why:'',clipGoal:3,goalMin:90,remind:'19:00',outGoal:5,monthGoal:30000,rate:500}};
 let S;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
 S=Object.assign({},D,S||{});S.set=Object.assign({},D.set,S.set);if(!S.start)S.start=dk(new Date());
 if(S.clips&&S.clips.length&&!S.projects.length)S.projects=S.clips.map((c,i)=>({id:'o'+i,t:c.t,k:c.k==='pay'?'Заказ':c.k,l:c.l||'',st:3,doneAt:c.d}));
@@ -128,7 +128,8 @@ const totSec=()=>Object.values(S.sec).reduce((a,b)=>a+b,0)+runSec();
 const todaySec=()=>(S.sec[tod()]||0)+runSec();
 const ws=()=>{const x=new Date();x.setDate(x.getDate()-(x.getDay()+6)%7);return x};
 const weekDays=()=>[...Array(7)].map((_,i)=>{const d=ws();d.setDate(d.getDate()+i);return dk(d)});
-const money=n=>n.toLocaleString('ru-RU')+' ₽';
+const cur=()=>{const c=S.set.cur||'BYN (Br)';const m=c.match(/\((.+)\)/);return m?m[1]:c};
+const money=n=>n.toLocaleString('ru-RU')+' '+cur();
 const fmtD=d=>d?d.slice(8)+'.'+d.slice(5,7):'';
 let tab='today';
 const TABS=[['today','СЕГОДНЯ'],['proj','ПРОЕКТЫ'],['lead','ЛИДЫ'],['money','ДЕНЬГИ'],['idea','ИДЕИ']];
@@ -145,14 +146,19 @@ today(){const wd=weekDays(),done=S.projects.filter(p=>p.st===3&&wd.includes(p.do
  return cloudBox()+`<div class="hero"><div class="lab">МОЯ ЦЕЛЬ</div><div class="dream" data-a="set">${esc(se.dream||'Нажми и напиши, кем ты хочешь стать')}</div>${se.why?`<div class="why" data-a="set">«${esc(se.why)}»</div>`:`<div class="why" data-a="set">Напиши, ради чего ты это делаешь →</div>`}
  <div class="cd"><b>${left}</b><span>дней до цели</span></div><div class="bar"><i style="width:${pass}%"></i></div></div>
  <div class="quote">${Q[new Date().getDate()%Q.length]}</div>
- <div class="pn ${S.timer?'live':''}" id="tpn"><div class="lab"><span>СЕГОДНЯ В МОНТАЖЕ</span><span style="color:var(--rd)">${S.timer?'● ЗАПИСЬ':''}</span></div><div class="big"><span id="tm">0:00:00</span></div><div class="mu2">ЦЕЛЬ ${hm(se.goalMin*60)}</div><div class="bar"><i id="tb"></i></div>
+ <div class="pn ${S.timer?'live':''}" id="tpn"><div class="lab"><span>СЕГОДНЯ В МОНТАЖЕ</span><span style="color:var(--rd)">${S.timer?'● ЗАПИСЬ':''}</span></div><div class="big"><span id="tm">0:00:00</span></div><div class="mu2" data-a="tgoal" style="cursor:pointer">ЦЕЛЬ ${hm(se.goalMin*60)} · ИЗМЕНИТЬ ›</div><div class="bar"><i id="tb"></i></div>
   <button class="btn p go" data-a="timer">${S.timer?'■ СТОП':'▶ НАЧАТЬ МОНТАЖ'}</button><div class="flex" style="margin-top:12px"><button class="btn s" data-a="tedit">ПРАВИТЬ ВРЕМЯ</button><button class="btn s" data-a="treset">СБРОСИТЬ</button></div><div class="hist">${h}</div></div>
  <div class="pn"><div class="lab">ВЛОЖЕНО В СЕБЯ</div><div class="big sm" id="tot">0:00:00</div><div class="lvl">${LV[li][1]}${nx?` · ещё ${Math.max(1,Math.ceil(nx[0]-tot))} ч до «${nx[1]}»`:''}</div></div>
  <div class="pn"><div class="lab">ГЛАВНОЕ НА СЕГОДНЯ</div><div class="flex" style="flex-wrap:nowrap"><input type="checkbox" data-a="fd" ${f.done?'checked':''}><input id="foc" value="${esc(f.t)}" placeholder="Одна задача, которая сделает день удачным"></div></div>
  <div class="pn"><div class="lab">РОЛИКИ НА ЭТОЙ НЕДЕЛЕ</div><div class="big">${done.length}<small>/ ${se.clipGoal}</small></div>
   <div class="days">${wd.map(d=>{const n=S.projects.filter(p=>p.st===3&&p.doneAt===d).length;return `<div class="d ${d===tod()?'t':''}"><em>${new Date(d+'T12:00').toLocaleDateString('ru-RU',{weekday:'short'}).toUpperCase()}</em>${'<i></i>'.repeat(Math.min(n,4))}</div>`}).join('')}</div></div>
  <div class="stats"><div><b>${streak()}</b><span>дней подряд</span></div><div><b>${S.projects.filter(p=>p.st===3).length}</b><span>в портфолио</span></div><div><b>${S.leads.filter(l=>wd.includes(l.added)).length}/${se.outGoal}</b><span>контактов</span></div></div>
- <div class="pn"><div class="lab">НАСТРОЙКИ</div><div class="flex"><button class="btn s" data-a="set">ЦЕЛИ</button><button class="btn s" data-a="notif">🔔 УВЕДОМЛЕНИЯ</button><button class="btn s" data-a="thm">ТЕМА</button><button class="btn s" data-a="exp">КОПИЯ</button><button class="btn s" data-a="imp">ЗАГРУЗИТЬ</button></div></div>`},
+ <div class="pn"><div class="lab">ЦЕЛИ И НАПОМИНАНИЯ</div>
+ <div class="it"><div class="g"><div class="nm">Монтаж в день</div><div class="mu2">${hm(se.goalMin*60)}</div></div><button class="btn s" data-a="tgoal">ИЗМЕНИТЬ</button></div>
+ <div class="it"><div class="g"><div class="nm">Напомнить в ${esc(se.remind)}</div><div class="mu2" style="line-height:1.5">Если к этому времени ты монтировал меньше 10 минут, появится красная плашка и прозвучит сигнал</div></div><button class="btn s" data-a="trem">ИЗМЕНИТЬ</button></div>
+ <div class="it"><div class="g"><div class="nm">Доход в месяц</div><div class="mu2" style="line-height:1.5">цель ${money(se.monthGoal)} · ставка ${money(se.rate)}/час · валюта ${esc(cur())}</div></div><button class="btn s" data-a="mgoal">ИЗМЕНИТЬ</button></div>
+ <div class="it"><div class="g"><div class="nm">Системные уведомления</div><div class="mu2" style="line-height:1.5">Всплывающее сообщение на экране, когда приложение свёрнуто. Разрешить нужно один раз</div></div><button class="btn s" data-a="notif">РАЗРЕШИТЬ</button></div></div>
+ <div class="pn"><div class="lab">НАСТРОЙКИ</div><div class="flex"><button class="btn s" data-a="set">МОЯ ЦЕЛЬ</button><button class="btn s" data-a="thm">ТЕМА</button><button class="btn s" data-a="exp">КОПИЯ</button><button class="btn s" data-a="imp">ЗАГРУЗИТЬ</button></div></div>`},
 proj(){const a=S.projects.map((p,i)=>[p,i]);const act=a.filter(([p])=>p.st<3).sort((x,y)=>(x[0].dl||'9')>(y[0].dl||'9')?1:-1),dn=a.filter(([p])=>p.st===3).reverse();
  const row=([p,i])=>`<div class="it"><div class="g"><div class="nm">${p.l?`<a href="${esc(p.l)}" target="_blank" rel="noopener" style="color:inherit">${esc(p.t)}</a>`:esc(p.t)}</div><div class="sub"><span class="chip c">${ST[p.st]}</span><span class="chip">${esc(p.k).toUpperCase()}</span>${p.dl?`<span class="chip ${p.dl<tod()&&p.st<3?'r':''}">ДЕДЛАЙН ${fmtD(p.dl)}</span>`:''}${p.st===3?`<span class="chip">${fmtD(p.doneAt)}</span>`:''}</div>${p.st<3?`<div class="sub"><button class="btn s" data-a="nx" data-l="projects" data-i="${i}">→ ${ST[p.st+1]}</button></div>`:''}</div><button class="x" data-a="del" data-l="projects" data-i="${i}">✕</button></div>`;
  return `<div class="pn">${head('В РАБОТЕ · '+act.length,'+ ПРОЕКТ','addp')}${act.map(row).join('')||'<div class="empty">Нет активных проектов. Добавь первый, даже учебный.</div>'}</div><div class="pn"><div class="lab">ПОРТФОЛИО · СДАНО ${dn.length}</div>${dn.map(row).join('')||'<div class="empty">Сданные ролики появятся здесь.</div>'}</div>`},
@@ -161,7 +167,7 @@ lead(){const a=S.leads.map((l,i)=>[l,i]).sort((x,y)=>(x[0].fu||'9')>(y[0].fu||'9
  <div class="pn"><div class="lab">ИДЕИ, КОМУ НАПИСАТЬ</div><div class="mu" style="color:var(--mu)">Кто часто выкладывает видео, но монтаж слабый? Покажи ему пример его же ролика в твоём монтаже. Это лучше любого «могу смонтировать».</div></div>`},
 money(){const m=tod().slice(0,7),mo=S.income.filter(x=>x.d.startsWith(m)).reduce((s,x)=>s+x.a,0),tot=S.income.reduce((s,x)=>s+x.a,0);
  return `<div class="pn"><div class="lab">В ЭТОМ МЕСЯЦЕ</div><div class="big" style="font-size:40px">${money(mo)}</div><div class="bar"><i style="width:${Math.min(100,mo/S.set.monthGoal*100)}%"></i></div><div class="flex" style="justify-content:space-between"><span class="chip">ЦЕЛЬ ${money(S.set.monthGoal)}</span><span class="chip">ВСЕГО ${money(tot)}</span></div></div>
- <div class="pn"><div class="lab">КАЛЬКУЛЯТОР ЦЕНЫ</div><div class="calc"><div><label class="mu" style="font-size:12px;color:var(--mu)">Часов на ролик</label><input id="ch" type="number" value="4"></div><div><label class="mu" style="font-size:12px;color:var(--mu)">₽ за час</label><input id="cr" type="number" value="${S.set.rate}"></div></div><div class="big" style="font-size:32px;margin-top:20px" id="cp"></div></div>
+ <div class="pn"><div class="lab">КАЛЬКУЛЯТОР ЦЕНЫ</div><div class="calc"><div><label class="mu" style="font-size:12px;color:var(--mu)">Часов на ролик</label><input id="ch" type="number" value="4"></div><div><label class="mu" style="font-size:12px;color:var(--mu)">${cur()} за час</label><input id="cr" type="number" value="${S.set.rate}"></div></div><div class="big" style="font-size:32px;margin-top:20px" id="cp"></div></div>
  <div class="pn">${head('ДОХОД','+ ДОХОД','addm')}${S.income.map((x,i)=>[x,i]).reverse().map(([x,i])=>`<div class="it"><div class="g"><div class="nm m">${money(x.a)}</div><div class="sub"><span class="chip">${fmtD(x.d)}</span><span class="chip">${esc(x.s)||'БЕЗ ПОДПИСИ'}</span></div></div><button class="x" data-a="del" data-l="income" data-i="${i}">✕</button></div>`).join('')||'<div class="empty">Первая запись здесь будет началом.</div>'}</div>`},
 idea(){const list=(k)=>S[k].map((x,i)=>`<div class="it ${x.done?'dn':''}"><input type="checkbox" data-a="tog" data-l="${k}" data-i="${i}" ${x.done?'checked':''}><div class="g nm" style="font-weight:600">${esc(x.t)}</div><button class="x" data-a="del" data-l="${k}" data-i="${i}">✕</button></div>`).join('');
  return `<div class="pn"><div class="lab">ИДЕИ И РЕФЕРЕНСЫ <span>${S.ideas.filter(x=>x.done).length}/${S.ideas.length}</span></div>${list('ideas')||'<div class="empty">Кидай сюда всё, что захотел повторить.</div>'}<div class="add"><input data-add="ideas" placeholder="Новая идея… и Enter"><button class="btn" data-a="addi" data-k="ideas">+</button></div></div>
@@ -173,7 +179,8 @@ function calc(){if($('#cp'))$('#cp').textContent=money(Math.round((+$('#ch').val
 const late=()=>{const n=new Date();return pad(n.getHours())+':'+pad(n.getMinutes())>=S.set.remind&&todaySec()<600};
 function banner(){const b=$('#banner');b.style.display=late()?'block':'none';b.textContent='Каждый день без монтажа отодвигает цель. Сядь хотя бы на 10 минут.'}
 function beep(){try{const a=new (window.AudioContext||window.webkitAudioContext)(),o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.frequency.value=740;g.gain.setValueAtTime(.15,a.currentTime);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+.6);o.start();o.stop(a.currentTime+.6)}catch(e){}}
-function remind(){if(late()&&Date.now()-S.notified>3600000){S.notified=Date.now();save();beep();try{if(Notification.permission==='granted')new Notification('Время монтажа',{body:'Ты ещё не садился за проект сегодня'})}catch(e){}}}
+function notify(t,b){try{if(Notification.permission!=='granted')return;if(navigator.serviceWorker&&navigator.serviceWorker.ready)navigator.serviceWorker.ready.then(r=>r.showNotification(t,{body:b,icon:'icon-180.png'})).catch(()=>{try{new Notification(t,{body:b})}catch(e){}});else new Notification(t,{body:b})}catch(e){}}
+function remind(){if(late()&&Date.now()-S.notified>3600000){S.notified=Date.now();save();beep();notify('Время монтажа','Ты ещё не садился за проект сегодня')}}
 setInterval(tick,1000);setInterval(()=>{banner();remind()},30000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){render();remind()}});
 
@@ -212,6 +219,9 @@ $('#cX').onclick=()=>$('#dlg').close();
 $('#cOk').onclick=()=>{const o={};$('#dlg').fields.forEach(f=>o[f.k]=$('#f_'+f.k).value.trim());const r=cb(o);if(r===false)return;if(r!=='skip')save();$('#dlg').close();render()};
 
 const A={
+ tgoal(){const g=S.set.goalMin;ask('Сколько монтировать в день',[{k:'t',l:'Время в день (часы:минуты)',t:'time',v:pad(Math.floor(g/60))+':'+pad(g%60)}],o=>{const m=(o.t||'').split(':').map(Number);const v=m[0]*60+m[1];if(!(v>0)){alert('Выбери время больше нуля');return false}S.set.goalMin=v})},
+ trem(){const r=S.set.remind;ask('Когда напоминать',[{k:'t',l:'Время напоминания',t:'time',v:r.length===4?'0'+r:r}],o=>{if(!o.t)return false;S.set.remind=o.t})},
+ mgoal(){const s=S.set;ask('Доход',[{k:'cur',l:'Валюта',o:['BYN (Br)','RUB (₽)','USD ($)','EUR (€)','UAH (₴)','KZT (₸)','PLN (zł)'],v:s.cur},{k:'monthGoal',l:'Цель дохода в месяц',t:'number',v:s.monthGoal},{k:'rate',l:'Ставка за час монтажа',t:'number',v:s.rate}],o=>{s.cur=o.cur;if(+o.monthGoal>0)s.monthGoal=+o.monthGoal;if(+o.rate>0)s.rate=+o.rate})},
  treset(){if(!confirm('Сбросить время за сегодня до 0:00:00?'))return 1;S.sec[tod()]=0;if(S.timer)S.timer=Date.now()},
  tedit(){ask('Время за сегодня',[{k:'t',l:'Всего за сегодня (ч:мм:сс, например 1:30:00)',v:hm(todaySec()),p:'1:30:00'}],o=>{const m=o.t.split(':').map(Number);if(!o.t||m.length>3||m.some(x=>isNaN(x)||x<0)){alert('Формат: ч:мм:сс, например 1:30:00');return false}
   const sec=m.length===3?m[0]*3600+m[1]*60+m[2]:m.length===2?m[0]*3600+m[1]*60:m[0]*60;S.sec[tod()]=Math.max(0,sec-runSec())})},
@@ -221,14 +231,14 @@ const A={
  timer(){if(S.timer){S.sec[tod()]=(S.sec[tod()]||0)+runSec();S.timer=null}else S.timer=Date.now()},
  addp(){ask('Новый проект',[{k:'t',l:'Название'},{k:'k',l:'Тип',o:['Практика','Заказ','Для себя','Разбор референса']},{k:'dl',l:'Дедлайн (необязательно)',t:'date'},{k:'l',l:'Ссылка (необязательно)',p:'https://'}],o=>{if(!o.t)return false;S.projects.push({id:Date.now(),t:o.t,k:o.k,dl:o.dl,l:o.l,st:0})})},
  addl(){ask('Новый контакт',[{k:'n',l:'Имя или канал'},{k:'c',l:'Где писать (Instagram, Telegram…)'},{k:'fu',l:'Написать',t:'date',v:plus(1)}],o=>{if(!o.n)return false;S.leads.push({n:o.n,c:o.c,st:0,fu:o.fu,added:tod()})})},
- addm(){ask('Доход',[{k:'a',l:'Сумма, ₽',t:'number'},{k:'s',l:'От кого / за что'}],o=>{if(!+o.a)return false;S.income.push({a:+o.a,s:o.s,d:tod()})})},
- set(){const s=S.set;ask('Цели',[{k:'dream',l:'Моя цель одной фразой',v:s.dream,p:'Стать монтажёром, к которому стоит очередь'},{k:'dreamDate',l:'К какой дате',t:'date',v:s.dreamDate||plus(365)},{k:'why',l:'Ради чего я это делаю',v:s.why,p:'Свобода, семья, доказать себе…'},{k:'clipGoal',l:'Роликов в неделю',t:'number',v:s.clipGoal},{k:'goalMin',l:'Минут монтажа в день',t:'number',v:s.goalMin},{k:'remind',l:'Напоминать в',t:'time',v:s.remind},{k:'outGoal',l:'Новых контактов в неделю',t:'number',v:s.outGoal},{k:'monthGoal',l:'Цель дохода в месяц, ₽',t:'number',v:s.monthGoal},{k:'rate',l:'Ставка, ₽/час',t:'number',v:s.rate}],o=>{Object.keys(o).forEach(k=>{if(o[k])S.set[k]=['remind','dream','dreamDate','why'].includes(k)?o[k]:+o[k]})})},
+ addm(){ask('Доход',[{k:'a',l:'Сумма, '+cur(),t:'number'},{k:'s',l:'От кого / за что'}],o=>{if(!+o.a)return false;S.income.push({a:+o.a,s:o.s,d:tod()})})},
+ set(){const s=S.set;ask('Цели',[{k:'dream',l:'Моя цель одной фразой',v:s.dream,p:'Стать монтажёром, к которому стоит очередь'},{k:'dreamDate',l:'К какой дате',t:'date',v:s.dreamDate||plus(365)},{k:'why',l:'Ради чего я это делаю',v:s.why,p:'Свобода, семья, доказать себе…'},{k:'clipGoal',l:'Роликов в неделю',t:'number',v:s.clipGoal},{k:'outGoal',l:'Новых контактов в неделю',t:'number',v:s.outGoal}],o=>{Object.keys(o).forEach(k=>{if(o[k])S.set[k]=['remind','dream','dreamDate','why'].includes(k)?o[k]:+o[k]})})},
  nx(e){const a=S[e.l][e.i];if(e.l==='projects'){a.st=Math.min(3,a.st+1);if(a.st===3)a.doneAt=tod()}else a.st=(a.st+1)%5},
  fu(e){S.leads[e.i].fu=plus(3)},
  del(e){S[e.l].splice(e.i,1)},tog(e){S[e.l][e.i].done=!S[e.l][e.i].done},
  addi(e){const i=$('[data-add="'+e.k+'"]');if(i.value.trim()){S[e.k].push({t:i.value.trim(),done:false})}},
  thm(){const r=document.documentElement;const l=r.dataset.theme?r.dataset.theme==='light':matchMedia('(prefers-color-scheme:light)').matches;r.dataset.theme=l?'dark':'light';return 1},
- notif(){try{Notification.requestPermission().then(p=>alert(p==='granted'?'Уведомления включены':'Запрещено: останутся баннер и звук'))}catch(e){alert('Браузер не поддерживает уведомления')}return 1},
+ notif(){try{Notification.requestPermission().then(p=>alert(p==='granted'?'Уведомления разрешены.':'Уведомления запрещены. Останутся красная плашка и звук, пока приложение открыто.'))}catch(e){alert('Здесь уведомления недоступны. На iPhone добавь сайт на экран «Домой», открой с иконки и нажми снова.')}return 1},
  exp(){const a=document.createElement('a');a.href='data:application/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(S));a.download='cutlist-backup.json';a.click();return 1},
  imp(){$('#file').click();return 1}
 };
