@@ -20,7 +20,7 @@
 :root[data-theme="light"]{--bg:#f4eee3;--sf:#fffaf0;--ln:rgba(0,0,0,.18);--tx:#1d1812;--mu:#5f5547;--rd:#c8321f;--cy:#9a5a0a;--gl:rgba(255,160,60,.22);color-scheme:light}
 *{box-sizing:border-box}
 html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%}
-body{margin:0;background:radial-gradient(900px 480px at 50% -8%,var(--gl),transparent 70%),var(--bg);background-attachment:fixed;color:var(--tx);font:17px/1.5 Manrope,-apple-system,"Segoe UI",sans-serif;overflow-wrap:anywhere}
+body{margin:0;background:radial-gradient(900px 480px at 50% -8%,var(--gl),transparent 70%),var(--bg);background-attachment:fixed;color:var(--tx);font:17px/1.5 Manrope,-apple-system,"Segoe UI",sans-serif;overflow-wrap:break-word}
 main{max-width:640px;margin:0 auto;padding:var(--s2) var(--s2) 150px}
 .m,.lab,.big,.btn,.chip,.mu2,#nav button{font-family:"JetBrains Mono",ui-monospace,Consolas,monospace}
 .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--s2)}
@@ -54,8 +54,8 @@ p{margin:0}
 .chips{display:flex;gap:var(--s1);flex-wrap:wrap}
 .chip{font-size:11px;letter-spacing:.06em;border:1px solid var(--ln);border-radius:20px;padding:2px var(--s1);color:var(--mu)}
 .chip.r{border-color:var(--rd);color:var(--rd)}.chip.c{border-color:var(--cy);color:var(--cy)}
-.li{display:flex;align-items:center;gap:var(--s2);padding:var(--s1) 0;min-height:56px;border-top:1px solid var(--ln)}
-.li .g{flex:1;min-width:0}.li.dn .g{text-decoration:line-through;color:var(--mu)}
+.li{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s1) var(--s2);padding:var(--s1) 0;min-height:56px;border-top:1px solid var(--ln)}
+.li .g{flex:1 1 200px;min-width:0}.li.dn .g{text-decoration:line-through;color:var(--mu)}
 .empty>*+*{margin-top:var(--s2)}
 .days{display:grid;grid-template-columns:repeat(7,1fr);gap:var(--s1)}
 .d{height:56px;border:1px solid var(--ln);border-radius:8px;position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:2px;padding:4px}
@@ -88,11 +88,13 @@ dialog label{margin-top:var(--s2)}
 #toast.on{display:flex}#toast button{background:none;border:0;color:var(--cy);font:700 14px Manrope,sans-serif;min-height:44px;cursor:pointer;text-decoration:underline}
 @media(max-width:380px){.calc{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+body::before{content:'';position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:30}
+#rf{font-size:22px;min-width:44px;text-decoration:none;text-align:center}
 </style>
 </head>
 <body>
 <main>
- <div class="top"><div class="rec m"><i></i>REC · CUT LIST</div><div class="tc m" id="tc">00:00:00</div></div>
+ <div class="top"><div class="rec m"><i></i>REC · CUT LIST</div><div class="row" style="gap:var(--s1);flex-wrap:nowrap"><div class="tc m" id="tc">00:00:00</div><button class="lnk" id="rf" aria-label="Обновить приложение">↻</button></div></div>
  <div id="banner"></div>
  <div id="view"></div>
 </main>
@@ -163,7 +165,7 @@ today(){const wd=weekDays(),se=S.set,g=se.goalMin*60,done=S.projects.filter(p=>p
  <section class="sec"><div class="lab" data-a="set" style="cursor:pointer">${left===null?'МОЯ ЦЕЛЬ · ЗАДАЙ ДАТУ ›':left>0?'МОЯ ЦЕЛЬ · ЕЩЁ '+left+' ДН.':'МОЯ ЦЕЛЬ · СРОК ВЫШЕЛ, ОБНОВИ ›'}</div><h1 class="dream" data-a="set">${esc(se.dream||'Нажми и напиши, кем ты хочешь стать')}</h1>${se.why?`<p class="why" data-a="set">«${esc(se.why)}»</p>`:''}</section>
  <section class="sec ${S.timer?'live':''}" id="tpn"><div class="lab row"><span>СЕГОДНЯ В МОНТАЖЕ</span><span>${S.timer?'● ИДЁТ ЗАПИСЬ':''}</span></div><div class="big" id="tm">0:00:00</div><p class="mu2" id="rem"></p><div class="bar"><i id="tb"></i></div>
   <button class="btn p go" id="cta" data-a="timer">Начать монтаж</button>
-  <div class="links"><button class="lnk" data-a="tedit">Поправить время</button><button class="lnk" data-a="tgoal">Цель ${hm(g)} ›</button></div><div class="hist">${h}</div></section>${hot()}${onboard()}
+  <div class="links"><button class="lnk" data-a="tedit">Поправить время</button><button class="lnk" data-a="treset">Сбросить</button><button class="lnk" data-a="tgoal">Цель ${hm(g)} ›</button></div><div class="hist">${h}</div></section>${hot()}${onboard()}
  <section class="sec"><div class="lab">РОЛИКИ НА ЭТОЙ НЕДЕЛЕ</div><div class="big sm">${done.length}<small> из ${se.clipGoal}</small></div><p class="mu2">Всего в портфолио: ${S.projects.filter(p=>p.st===3).length}</p>
   <div class="days">${wd.map(d=>{const n=S.projects.filter(p=>p.st===3&&p.doneAt===d).length;return `<div class="d ${d===tod()?'t':''}"><em>${new Date(d+'T12:00').toLocaleDateString('ru-RU',{weekday:'short'}).toUpperCase()}</em>${'<i></i>'.repeat(Math.min(n,4))}</div>`}).join('')}</div>
   <button class="btn" data-a="addp">Добавить проект — станет ${act+1}-м в работе</button></section>
@@ -280,6 +282,7 @@ const A={
  tgoal(){const g=S.set.goalMin;ask('Сколько монтировать в день',[{k:'t',l:'Время в день (часы:минуты)',t:'time',v:pad(Math.floor(g/60))+':'+pad(g%60)}],o=>{const m=(o.t||'').split(':').map(Number),v=m[0]*60+m[1];if(!(v>0)){ferr('Выбери время больше нуля, например 01:30.');return false}S.set.goalMin=v},{ok:'Сохранить цель — таймер будет считать от неё',done:o=>'Цель на день: '+hm(S.set.goalMin*60)+'.'})},
  trem(){const r=S.set.remind;ask('Когда напоминать',[{k:'t',l:'Время напоминания',t:'time',v:r.length===4?'0'+r:r}],o=>{if(!o.t){ferr('Выбери время напоминания.');return false}S.set.remind=o.t},{ok:'Сохранить — напомню в выбранное время',done:'Напомню в '+S.set.remind+', если не начнёшь монтаж.'})},
  mgoal(){const s=S.set;ask('Доход и валюта',[{k:'cur',l:'Валюта',o:PRESETS,v:s.cur},{k:'monthGoal',l:'Цель дохода в месяц',t:'number',v:s.monthGoal},{k:'rate',l:'Ставка за час монтажа',t:'number',v:s.rate}],o=>{s.cur=o.cur;if(+o.monthGoal>0)s.monthGoal=+o.monthGoal;if(+o.rate>0)s.rate=+o.rate},{ok:'Сохранить — суммы пересчитаются',done:()=>'Цель месяца: '+money(S.set.monthGoal)+'.'})},
+ treset(){if(!confirm('Сбросить время за сегодня до 0:00:00?'))return 1;const ps=S.sec[tod()],pt=S.timer;S.sec[tod()]=0;if(S.timer)S.timer=Date.now();toast('Время за сегодня сброшено до 0:00:00.',{act:'Вернуть',fn:()=>{S.sec[tod()]=ps;S.timer=pt;save();render()}})},
  tedit(){ask('Время за сегодня',[{k:'t',l:'Всего за сегодня (ч:мм:сс), например 1:30:00',v:hm(todaySec()),p:'1:30:00'}],o=>{const m=o.t.split(':').map(Number);if(!o.t||m.length>3||m.some(x=>isNaN(x)||x<0)){ferr('Формат: часы:минуты:секунды, например 1:30:00.');return false}
   const sec=m.length===3?m[0]*3600+m[1]*60+m[2]:m.length===2?m[0]*3600+m[1]*60:m[0]*60;S.sec[tod()]=Math.max(0,sec-runToday())},{ok:'Сохранить время — таймер покажет его сразу',done:()=>'Время за сегодня: '+hm(todaySec())+'.'})},
  login(){ask('Вход в облако',[{k:'e',l:'Почта',t:'email',ac:'email'},{k:'p',l:'Пароль (минимум 6 символов)',t:'password',ac:'current-password'},{k:'m',l:'Действие',o:['Войти','Создать аккаунт']}],o=>{if(!o.e||o.p.length<6){ferr('Введи почту и пароль от 6 символов.');return false}return auth(o)},{ok:'Продолжить — данные появятся на всех устройствах',load:'Входим…'})},
@@ -311,7 +314,10 @@ try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}ca
 render();
 pull();setInterval(()=>{if(!document.hidden)pull()},60000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)pull()});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
+if('serviceWorker' in navigator){const had=!!navigator.serviceWorker.controller;navigator.serviceWorker.register('sw.js').catch(()=>{});navigator.serviceWorker.addEventListener('controllerchange',()=>{if(had)toast('Вышла новая версия приложения.',{act:'Обновить',fn:()=>location.reload()})})}
+$('#rf').onclick=async()=>{toast('Обновляю…');try{const r=await navigator.serviceWorker.getRegistration();if(r)await r.update()}catch(e){}location.reload()};
+let py=null;addEventListener('touchstart',e=>{py=(scrollY<=0&&!$('#dlg').open&&!/INPUT|SELECT|TEXTAREA/.test(e.target.tagName))?e.touches[0].clientY:null},{passive:true});
+addEventListener('touchend',e=>{if(py!==null&&scrollY<=0&&e.changedTouches[0].clientY-py>120)$('#rf').click();py=null},{passive:true});
 </script>
 </body>
 </html>
