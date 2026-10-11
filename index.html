@@ -155,10 +155,9 @@ function onboard(){const se=S.set,st=[[se.dream,'Напиши свою цель'
 function backupNote(){const b=S.lastBackup,old=!b||(Date.now()-new Date(b+'T00:00'))/864e5>14;return CL.u?'Облако включено: копия хранится и там.':old?'Данные только на этом устройстве'+(b?'. Копии не было больше 14 дней.':'. Копию ещё не делал.')+' Скачай её или войди в облако.':'Последняя копия: '+fmtD(b)+'.'}
 const nm=p=>p.l?`<a href="${esc(p.l)}" target="_blank" rel="noopener">${esc(p.t)}</a>`:esc(p.t);
 const hd=(l,b)=>`<div class="row"><div class="lab">${l}</div>${b||''}</div>`;
-function ntState(){if(typeof Notification==='undefined')return['недоступны здесь: на iPhone открой сайт с иконки «Домой»','Как включить'];const p=Notification.permission;return p==='granted'?['включены ✓','']:p==='denied'?['запрещены: разреши их в настройках браузера для этого сайта','Как включить']:['выключены: разреши, чтобы получать напоминания','Разрешить']}
 const V={
 today(){const wd=weekDays(),se=S.set,g=se.goalMin*60,done=S.projects.filter(p=>p.st===3&&wd.includes(p.doneAt)),act=S.projects.filter(p=>p.st<3).length,f=S.focus.d===tod()?S.focus:{t:'',done:false},dl=se.dreamDate;
- const left=dl?Math.ceil((new Date(dl+'T00:00')-new Date())/864e5):null,tot=totSec()/3600;let li=0;LV.forEach((l,i)=>{if(tot>=l[0])li=i});const nx=LV[li+1],nt=ntState(),wsec=wd.reduce((a,d)=>a+(S.sec[d]||0),0)+runToday(),hw=Math.floor(wsec/3600)+':'+pad(Math.floor(wsec%3600/60));
+ const left=dl?Math.ceil((new Date(dl+'T00:00')-new Date())/864e5):null,tot=totSec()/3600;let li=0;LV.forEach((l,i)=>{if(tot>=l[0])li=i});const nx=LV[li+1],wsec=wd.reduce((a,d)=>a+(S.sec[d]||0),0)+runToday(),hw=Math.floor(wsec/3600)+':'+pad(Math.floor(wsec%3600/60));
  const h=[...Array(7)].map((_,i)=>`<div><i style="height:${Math.min(100,(S.sec[plus(i-6)]||0)/g*100)}%"></i></div>`).join('');
  return cloudBox()+`
  <section class="sec"><div class="lab" data-a="set" style="cursor:pointer">${left===null?'МОЯ ЦЕЛЬ · ЗАДАЙ ДАТУ ›':left>0?'МОЯ ЦЕЛЬ · ЕЩЁ '+left+' ДН.':'МОЯ ЦЕЛЬ · СРОК ВЫШЕЛ, ОБНОВИ ›'}</div><h1 class="dream" data-a="set">${esc(se.dream||'Нажми и напиши, кем ты хочешь стать')}</h1>${se.why?`<p class="why" data-a="set">«${esc(se.why)}»</p>`:''}</section>
@@ -174,9 +173,9 @@ today(){const wd=weekDays(),se=S.set,g=se.goalMin*60,done=S.projects.filter(p=>p
  <section class="sec"><div class="lab">ВЛОЖЕНО В СЕБЯ</div><div class="big sm" id="tot">0:00:00</div><p class="lvl">${LV[li][1]}${nx?` · ещё ${Math.max(1,Math.ceil(nx[0]-tot))} ч до «${nx[1]}»`:''}</p></section>
  <section class="sec"><div class="lab">ЦЕЛИ И НАПОМИНАНИЯ</div>
   <div class="li"><div class="g"><b>Монтаж в день</b><br><span class="mu2">${hm(g)}</span></div><button class="lnk" data-a="tgoal">Изменить</button></div>
-  <div class="li"><div class="g"><b>Напомнить в ${esc(se.remind)}</b><br><span class="mu2">Если к этому времени ты монтировал меньше 10 минут, появится плашка и прозвучит сигнал</span></div><button class="lnk" data-a="trem">Изменить</button></div>
+  <div class="li"><div class="g"><b>Плашка и сигнал в ${esc(se.remind)}</b><br><span class="mu2">Если к этому времени ты монтировал меньше 10 минут. Работает, пока приложение открыто</span></div><button class="lnk" data-a="trem">Изменить</button></div>
   <div class="li"><div class="g"><b>Доход в месяц</b><br><span class="mu2">цель ${money(se.monthGoal)} · ставка ${money(se.rate)}/час</span></div><button class="lnk" data-a="mgoal">Изменить</button></div>
-  <div class="li"><div class="g"><b>Системные уведомления</b><br><span class="mu2">${nt[0]}</span></div>${nt[1]?`<button class="lnk" data-a="notif">${nt[1]}</button>`:''}</div></section>
+  <div class="li"><div class="g"><b>Напоминания на телефон</b><br><span class="mu2">${pushText()}</span></div><span class="links"><button class="lnk" data-a="pcfg">Настроить</button>${PS().on?'<button class="lnk" data-a="ptest">Проверить</button><button class="lnk" data-a="poff">Выключить</button>':''}</span></div></section>
  <section class="sec"><div class="lab">ДАННЫЕ И ВИД</div><p class="mu2">${backupNote()}</p><div class="links"><button class="lnk" data-a="set">Моя цель и «зачем»</button><button class="lnk" data-a="exp">Скачать копию данных</button><button class="lnk" data-a="imp">Загрузить копию</button><button class="lnk" data-a="thm">Светлая / тёмная тема</button></div></section>`},
 proj(){const a=S.projects.map((p,i)=>[p,i]),act=a.filter(([p])=>p.st<3).sort((x,y)=>(x[0].dl||'9')>(y[0].dl||'9')?1:-1),dn=a.filter(([p])=>p.st===3).reverse();
  const card=([p,i])=>`<article class="card tight"><div class="row"><b class="nm">${nm(p)}</b><button class="lnk" data-a="del" data-l="projects" data-i="${i}">Удалить</button></div><div class="chips"><span class="chip c">${ST[p.st]}</span><span class="chip">${esc(p.k).toUpperCase()}</span>${p.dl?`<span class="chip ${p.dl<tod()?'r':''}">ДЕДЛАЙН ${fmtD(p.dl)}${p.dl<tod()?' · ПРОСРОЧЕН':''}</span>`:''}</div><div><button class="btn" data-a="nx" data-l="projects" data-i="${i}">${p.st===2?`Сдать: станет роликом №${dn.length+1} в портфолио`:`Перевести в «${ST[p.st+1]}» · этап ${p.st+2} из 4`}</button></div></article>`;
@@ -206,7 +205,7 @@ const late=()=>{if(S.timer)return false;const n=new Date();return pad(n.getHours
 function banner(){const b=$('#banner');b.style.display=late()?'block':'none';b.textContent=tab==='today'?'Время монтажа. Нажми «Начать монтаж» ниже: хватит и 10 минут.':'Время монтажа. Открой «СЕГОДНЯ» и нажми «Начать монтаж»: хватит и 10 минут.'}
 function beep(){try{const a=new (window.AudioContext||window.webkitAudioContext)(),o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.frequency.value=740;g.gain.setValueAtTime(.15,a.currentTime);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+.6);o.start();o.stop(a.currentTime+.6)}catch(e){}}
 function notify(t,b){try{if(Notification.permission!=='granted')return;if(navigator.serviceWorker&&navigator.serviceWorker.ready)navigator.serviceWorker.ready.then(r=>r.showNotification(t,{body:b,icon:'icon-180.png'})).catch(()=>{try{new Notification(t,{body:b})}catch(e){}});else new Notification(t,{body:b})}catch(e){}}
-function remind(){if(late()&&Date.now()-S.notified>3600000){S.notified=Date.now();persist();beep();notify('Время монтажа','Ты ещё не садился за проект сегодня')}}
+function remind(){if(late()&&Date.now()-S.notified>3600000){S.notified=Date.now();persist();beep();if(!PS().on)notify('Время монтажа','Ты ещё не садился за проект сегодня')}}
 setInterval(tick,1000);setInterval(()=>{banner();remind()},30000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){render();remind()}});
 
@@ -237,6 +236,15 @@ async function auth(o){const up=o.m==='Создать аккаунт';try{
  keep(r.j);setTimeout(()=>{render();pull().then(()=>toast('Вошёл как '+o.e+'. Данные теперь одинаковы на всех устройствах.'))},0);return 'skip'}catch(e){ferr('Нет интернета. Подключись к сети и нажми ещё раз: данные на этом устройстве в безопасности.');return false}}
 function cloudBox(){return CL.u?`<div class="row cl"><span class="mu2">☁ ${esc(CL.u.email)} · <span id="cst">${esc(CL.st)}</span></span><span class="links"><button class="lnk" data-a="resync">Обновить</button><button class="lnk" data-a="logout">Выйти</button></span></div>`
  :`<div class="row cl"><span class="mu2">Данные только на этом устройстве</span><button class="lnk" data-a="login">Войти — данные появятся на всех устройствах</button></div>`}
+const VAPID="BEfixBb3S02vUh-E33xC2AON96voH7liNqYfdvZen5xoKrjfB6yaSy0E8rzC06DB2k7pb03W9YwV9BwNz8exJ40";
+const EV={30:'Каждые 30 минут',60:'Каждый час',120:'Каждые 2 часа',180:'Каждые 3 часа'};
+const PS=()=>{try{return JSON.parse(localStorage.getItem('cl_push'))||{}}catch(e){return{}}};
+const PSset=o=>{try{localStorage.setItem('cl_push',JSON.stringify(o))}catch(e){}};
+const pushText=()=>{const p=PS();return p.on?EV[p.every].toLowerCase()+' с '+p.from+' до '+p.to+(p.only?', пока цель дня не выполнена':'')+'. Приходят и при закрытом приложении.':'выключены. Настрой, и телефон сам будет напоминать, даже когда приложение закрыто'};
+function u8(b){const p='='.repeat((4-b.length%4)%4),r=atob((b+p).replace(/-/g,'+').replace(/_/g,'/'));return Uint8Array.from(r,c=>c.charCodeAt(0))}
+async function pushSub(){const reg=await navigator.serviceWorker.ready;return (await reg.pushManager.getSubscription())||reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:u8(VAPID)})}
+async function pushSave(c){const sub=await pushSub();const r=await rest('/rest/v1/push_subs?on_conflict=user_id',{method:'POST',headers:{Prefer:'resolution=merge-duplicates'},body:JSON.stringify({user_id:CL.u.uid,sub:sub.toJSON(),enabled:true,every_min:c.every,from_t:c.from,to_t:c.to,only_open:c.only,tz:Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC',updated_at:new Date().toISOString()})});
+ if(!r||!r.ok)throw new Error(r?String(r.s):'login')}
 let cb=null,opt={};
 const ferr=m=>{$('#derr').textContent=m};
 function ask(title,fields,fn,o){opt=o||{};cb=fn;$('#dt').textContent=title;ferr('');
@@ -254,6 +262,21 @@ $('#toast').onclick=e=>{if(e.target.hasAttribute('data-toast')&&$('#toast').fn){
 const PRESETS=['BYN (Br)','RUB (₽)','USD ($)','EUR (€)','UAH (₴)','KZT (₸)','PLN (zł)'];
 const A={
  qn(){qo++;render();return 1},
+ pcfg(){const p=PS(),ios=/iPhone|iPad|iPod/.test(navigator.userAgent),stand=navigator.standalone===true||matchMedia('(display-mode: standalone)').matches;
+  ask('Напоминания на телефон',[{k:'ev',l:'Как часто',o:Object.values(EV),v:EV[p.every||120]},{k:'from',l:'Не раньше',t:'time',v:p.from||'10:00'},{k:'to',l:'Не позже',t:'time',v:p.to||'22:00'},{k:'only',l:'Когда напоминать',o:['Пока цель дня не выполнена','Всегда'],v:p.only===false?'Всегда':'Пока цель дня не выполнена'}],async o=>{
+   if(!CL.u){ferr('Сначала войди в облако: на вкладке «Сегодня» нажми «Войти».');return false}
+   if(ios&&!stand){ferr('На iPhone сначала добавь сайт на экран «Домой» и открой его с иконки.');return false}
+   if(!('PushManager' in window)||typeof Notification==='undefined'){ferr('Этот браузер не умеет пуш-уведомления. Открой приложение с иконки «Домой».');return false}
+   if(!o.from||!o.to||o.from>=o.to){ferr('Время «не раньше» должно быть меньше времени «не позже».');return false}
+   try{const perm=await Notification.requestPermission();if(perm!=='granted'){ferr('Уведомления не разрешены. Включи их: Настройки iPhone → Уведомления → Cut List.');return false}
+    const every=+Object.keys(EV).find(k=>EV[k]===o.ev),c={every,from:o.from,to:o.to,only:o.only!=='Всегда'};
+    await pushSave(c);PSset(Object.assign({on:true},c))}catch(e){ferr(String(e.message)==='404'?'В Supabase нет таблицы push_subs: запусти SQL из файла 1-table.sql.':'Не получилось включить: '+(e.message||e)+'. Нажми ещё раз.');return false}
+  },{ok:'Включить — буду напоминать по расписанию',load:'Включаю…',done:'Готово. Нажми «Проверить», чтобы получить тестовое уведомление сейчас.'})},
+ ptest(){toast('Отправляю тест…');(async()=>{try{const t=await token();if(!t){toast('Войди в облако заново.');return}
+  const r=await fetch(SB_URL+'/functions/v1/send-reminders',{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:'Bearer '+t},body:JSON.stringify({test:true})});let j=null;try{j=await r.json()}catch(e){}
+  toast(r.ok&&j&&j.ok?'Тест отправлен: должен прийти за несколько секунд. Не пришёл? Проверь, что открыл с иконки «Домой» и уведомления разрешены.':r.ok&&j&&j.ok===false?'Сервер не смог отправить на это устройство. Нажми «Настроить» ещё раз.':r.status===404&&!j?'Серверная часть не установлена: выполни шаг с Edge Function из инструкции.':j&&j.error==='no_sub'?'Сначала нажми «Настроить».':'Не получилось: '+((j&&j.error)||r.status))}catch(e){toast('Нет соединения с сервером. Проверь интернет.')}})();return 1},
+ poff(){(async()=>{try{if(CL.u)await rest('/rest/v1/push_subs?user_id=eq.'+CL.u.uid,{method:'PATCH',body:JSON.stringify({enabled:false})})}catch(e){}PSset(Object.assign(PS(),{on:false}));render();toast('Напоминания выключены. Включить снова можно кнопкой «Настроить».')})();return 1},
+
  tgoal(){const g=S.set.goalMin;ask('Сколько монтировать в день',[{k:'t',l:'Время в день (часы:минуты)',t:'time',v:pad(Math.floor(g/60))+':'+pad(g%60)}],o=>{const m=(o.t||'').split(':').map(Number),v=m[0]*60+m[1];if(!(v>0)){ferr('Выбери время больше нуля, например 01:30.');return false}S.set.goalMin=v},{ok:'Сохранить цель — таймер будет считать от неё',done:o=>'Цель на день: '+hm(S.set.goalMin*60)+'.'})},
  trem(){const r=S.set.remind;ask('Когда напоминать',[{k:'t',l:'Время напоминания',t:'time',v:r.length===4?'0'+r:r}],o=>{if(!o.t){ferr('Выбери время напоминания.');return false}S.set.remind=o.t},{ok:'Сохранить — напомню в выбранное время',done:'Напомню в '+S.set.remind+', если не начнёшь монтаж.'})},
  mgoal(){const s=S.set;ask('Доход и валюта',[{k:'cur',l:'Валюта',o:PRESETS,v:s.cur},{k:'monthGoal',l:'Цель дохода в месяц',t:'number',v:s.monthGoal},{k:'rate',l:'Ставка за час монтажа',t:'number',v:s.rate}],o=>{s.cur=o.cur;if(+o.monthGoal>0)s.monthGoal=+o.monthGoal;if(+o.rate>0)s.rate=+o.rate},{ok:'Сохранить — суммы пересчитаются',done:()=>'Цель месяца: '+money(S.set.monthGoal)+'.'})},
@@ -274,8 +297,6 @@ const A={
  tog(e){S[e.l][e.i].done=!S[e.l][e.i].done},
  addi(e){const i=$('[data-add="'+e.k+'"]');if(!i.value.trim()){toast('Сначала впиши текст в поле, потом нажми «Добавить».');i.focus();return 1}S[e.k].push({t:i.value.trim(),done:false});toast('Добавлено. Всего: '+S[e.k].length+'.')},
  thm(){const r=document.documentElement;const l=r.dataset.theme?r.dataset.theme==='light':matchMedia('(prefers-color-scheme:light)').matches;r.dataset.theme=l?'dark':'light';return 1},
- notif(){if(typeof Notification==='undefined'||Notification.permission==='denied'){toast(typeof Notification==='undefined'?'На iPhone: «Поделиться» → «На экран Домой», открой с иконки и нажми «Разрешить».':'Открой настройки сайта в браузере, разреши уведомления и вернись сюда.');return 1}
-  Notification.requestPermission().then(p=>{toast(p==='granted'?'Уведомления включены. Напомню в '+S.set.remind+'.':'Не разрешено. Останутся красная плашка и звук, пока приложение открыто.');render()});return 1},
  exp(){const a=document.createElement('a');a.href='data:application/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(S));a.download='cutlist-backup.json';a.click();S.lastBackup=tod();save();render();toast('Копия сохранена: cutlist-backup.json. Положи её в «Файлы» или iCloud.');return 1},
  imp(){$('#file').click();return 1}
 };
