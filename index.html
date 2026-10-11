@@ -4,13 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
 <link rel="apple-touch-icon" href="icon-180.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Cut List">
+<meta name="apple-mobile-web-app-title" content="MONTAGE">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0a0908">
-<title>CUT LIST</title>
+<title>MONTAGE</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@400;600;800&family=Playfair+Display:ital,wght@1,600;1,800&display=swap" rel="stylesheet">
@@ -94,7 +95,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:env(safe-area
 </head>
 <body>
 <main>
- <div class="top"><div class="rec m"><i></i>REC · CUT LIST</div><div class="row" style="gap:var(--s1);flex-wrap:nowrap"><div class="tc m" id="tc">00:00:00</div><button class="lnk" id="rf" aria-label="Обновить приложение">↻</button></div></div>
+ <div class="top"><div class="rec m"><i></i>REC · MONTAGE</div><div class="row" style="gap:var(--s1);flex-wrap:nowrap"><div class="tc m" id="tc">00:00:00</div><button class="lnk" id="rf" aria-label="Обновить приложение">↻</button></div></div>
  <div id="banner"></div>
  <div id="view"></div>
 </main>
@@ -270,7 +271,7 @@ const A={
    if(ios&&!stand){ferr('На iPhone сначала добавь сайт на экран «Домой» и открой его с иконки.');return false}
    if(!('PushManager' in window)||typeof Notification==='undefined'){ferr('Этот браузер не умеет пуш-уведомления. Открой приложение с иконки «Домой».');return false}
    if(!o.from||!o.to||o.from>=o.to){ferr('Время «не раньше» должно быть меньше времени «не позже».');return false}
-   try{const perm=await Notification.requestPermission();if(perm!=='granted'){ferr('Уведомления не разрешены. Включи их: Настройки iPhone → Уведомления → Cut List.');return false}
+   try{const perm=await Notification.requestPermission();if(perm!=='granted'){ferr('Уведомления не разрешены. Включи их: Настройки iPhone → Уведомления → MONTAGE.');return false}
     const every=+Object.keys(EV).find(k=>EV[k]===o.ev),c={every,from:o.from,to:o.to,only:o.only!=='Всегда'};
     await pushSave(c);PSset(Object.assign({on:true},c))}catch(e){ferr(String(e.message)==='404'?'В Supabase нет таблицы push_subs: запусти SQL из файла 1-table.sql.':'Не получилось включить: '+(e.message||e)+'. Нажми ещё раз.');return false}
   },{ok:'Включить — буду напоминать по расписанию',load:'Включаю…',done:'Готово. Нажми «Проверить», чтобы получить тестовое уведомление сейчас.'})},
