@@ -91,6 +91,26 @@ dialog label{margin-top:var(--s2)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 body::before{content:'';position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:30}
 #rf{font-size:22px;min-width:44px;text-decoration:none;text-align:center}
+body{min-height:calc(100vh + 2px)}
+@supports (min-height:100dvh){body{min-height:calc(100dvh + 2px)}}
+
+.btn{display:flex;align-items:center;justify-content:center;gap:var(--s1);background:rgba(255,255,255,.04);border:1px solid var(--ln);border-radius:16px;font:700 15px Manrope,sans-serif;letter-spacing:0;text-align:center;transition:transform .12s,border-color .2s,box-shadow .2s}
+.btn:active{transform:scale(.985)}
+.btn .tx{display:flex;flex-direction:column;gap:2px;flex:1;text-align:left}
+.btn .tx b{font:800 16px/1.25 Manrope,sans-serif}
+.btn .tx small{font:500 12px/1.35 Manrope,sans-serif;color:var(--mu)}
+.btn .ar{font-size:22px;opacity:.6;flex:none;line-height:1;margin-left:var(--s1)}
+.btn .ic{margin-right:var(--s1);width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.22);display:grid;place-items:center;flex:none}
+.btn .ic svg{width:18px;height:18px}
+.btn.p{background:linear-gradient(135deg,#ff6b45 0%,#e5392c 55%,#c92a46 100%);border:0;color:#fff;min-height:68px;padding:var(--s1) var(--s2);box-shadow:0 8px 22px rgba(229,57,44,.32),inset 0 1px 0 rgba(255,255,255,.28)}
+.btn.p .tx small{color:rgba(255,255,255,.82)}
+.btn.p .ar{opacity:.85}
+.btn.p:hover{filter:brightness(1.08)}
+.go{min-height:76px;border-radius:20px}
+.go .ic{width:48px;height:48px}.go .ic svg{width:22px;height:22px}
+.go .tx b{font-size:18px}
+.row.cl{flex-direction:column;align-items:flex-start;gap:0}
+.card .btn{width:100%}
 </style>
 </head>
 <body>
@@ -165,7 +185,7 @@ today(){const wd=weekDays(),se=S.set,g=se.goalMin*60,done=S.projects.filter(p=>p
  return cloudBox()+`
  <section class="sec"><div class="lab" data-a="set" style="cursor:pointer">${left===null?'МОЯ ЦЕЛЬ · ЗАДАЙ ДАТУ ›':left>0?'МОЯ ЦЕЛЬ · ЕЩЁ '+left+' ДН.':'МОЯ ЦЕЛЬ · СРОК ВЫШЕЛ, ОБНОВИ ›'}</div><h1 class="dream" data-a="set">${esc(se.dream||'Нажми и напиши, кем ты хочешь стать')}</h1>${se.why?`<p class="why" data-a="set">«${esc(se.why)}»</p>`:''}</section>
  <section class="sec ${S.timer?'live':''}" id="tpn"><div class="lab row"><span>СЕГОДНЯ В МОНТАЖЕ</span><span>${S.timer?'● ИДЁТ ЗАПИСЬ':''}</span></div><div class="big" id="tm">0:00:00</div><p class="mu2" id="rem"></p><div class="bar"><i id="tb"></i></div>
-  <button class="btn p go" id="cta" data-a="timer">Начать монтаж</button>
+  <button class="btn p go" id="cta" data-a="timer"><span class="ic" id="cic"></span><span class="tx"><b id="ct">Начать монтаж</b><small id="cs"></small></span><span class="ar">›</span></button>
   <div class="links"><button class="lnk" data-a="tedit">Поправить время</button><button class="lnk" data-a="treset">Сбросить</button><button class="lnk" data-a="tgoal">Цель ${hm(g)} ›</button></div><div class="hist">${h}</div></section>${hot()}${onboard()}
  <section class="sec"><div class="lab">РОЛИКИ НА ЭТОЙ НЕДЕЛЕ</div><div class="big sm">${done.length}<small> из ${se.clipGoal}</small></div><p class="mu2">Всего в портфолио: ${S.projects.filter(p=>p.st===3).length}</p>
   <div class="days">${wd.map(d=>{const n=S.projects.filter(p=>p.st===3&&p.doneAt===d).length;return `<div class="d ${d===tod()?'t':''}"><em>${new Date(d+'T12:00').toLocaleDateString('ru-RU',{weekday:'short'}).toUpperCase()}</em>${'<i></i>'.repeat(Math.min(n,4))}</div>`}).join('')}</div>
@@ -197,12 +217,12 @@ idea(){const L=(k,e)=>S[k].map((x,i)=>`<div class="li ${x.done?'dn':''}"><input 
  return `<section class="sec"><div class="lab">ИДЕИ И РЕФЕРЕНСЫ · ${cnt('ideas')}</div>${L('ideas','Пока пусто. Увидел монтаж, который зацепил? Впиши его ниже, и он будет ждать тебя здесь.')}<div class="add"><input data-add="ideas" placeholder="Что хочешь повторить?" enterkeyhint="done"><button class="btn" data-a="addi" data-k="ideas">Добавить</button></div></section>
  <section class="sec"><div class="lab">ПУТЬ К ПЕРВЫМ ДЕНЬГАМ · ${cnt('goals')}</div>${L('goals','Шагов нет. Впиши первый: что приблизит тебя к заказу?')}<div class="add"><input data-add="goals" placeholder="Свой шаг…" enterkeyhint="done"><button class="btn" data-a="addi" data-k="goals">Добавить</button></div></section>`}
 };
-function render(){$('#nav').innerHTML=TABS.map(([k,l])=>`<button class="${k===tab?'on':''}" data-t="${k}">${l}</button>`).join('');$('#view').innerHTML=V[tab]();tick();banner();calc()}
+function render(){$('#nav').innerHTML=TABS.map(([k,l])=>`<button class="${k===tab?'on':''}" data-t="${k}">${l}</button>`).join('');$('#view').innerHTML=V[tab]();tick();banner();calc();polish($('#view'));fitNav()}
 function tick(){const n=new Date();$('#tc').textContent=pad(n.getHours())+':'+pad(n.getMinutes())+':'+pad(n.getSeconds());const s=todaySec(),g=S.set.goalMin*60;
  if($('#tot'))$('#tot').textContent=hm(totSec());
  if($('#tm')){$('#tm').textContent=hm(s);$('#tb').style.width=Math.min(100,s/g*100)+'%';const l=g-s;
   $('#rem').textContent=l>0?'Осталось до цели: '+hm(l):'Цель '+hm(g)+' выполнена. Каждая минута сверху идёт в плюс.';
-  $('#cta').textContent=S.timer?'Остановить и сохранить · идёт '+hm(runSec()):s===0?'Начать монтаж · цель '+hm(g):l>0?'Продолжить монтаж · осталось '+hm(l):'Монтировать дальше · цель уже выполнена'}}
+  const c=S.timer?['Остановить и сохранить','идёт '+hm(runSec())]:s===0?['Начать монтаж','цель на сегодня '+hm(g)]:l>0?['Продолжить монтаж','осталось '+hm(l)+' до цели']:['Монтировать дальше','цель уже выполнена'];$('#ct').textContent=c[0];$('#cs').textContent=c[1];const ci=S.timer?'stop':'play';if($('#cic').dataset.i!==ci){$('#cic').innerHTML=IC[ci];$('#cic').dataset.i=ci}}}
 function calc(){if($('#cp'))$('#cp').textContent=money(Math.round((+$('#ch').value||0)*(+$('#cr').value||0)))}
 const late=()=>{if(S.timer)return false;const n=new Date();return pad(n.getHours())+':'+pad(n.getMinutes())>=S.set.remind&&todaySec()<600};
 function banner(){const b=$('#banner');b.style.display=late()?'block':'none';b.textContent=tab==='today'?'Время монтажа. Нажми «Начать монтаж» ниже: хватит и 10 минут.':'Время монтажа. Открой «СЕГОДНЯ» и нажми «Начать монтаж»: хватит и 10 минут.'}
@@ -239,6 +259,13 @@ async function auth(o){const up=o.m==='Создать аккаунт';try{
  keep(r.j);setTimeout(()=>{render();pull().then(()=>toast('Вошёл как '+o.e+'. Данные теперь одинаковы на всех устройствах.'))},0);return 'skip'}catch(e){ferr('Нет интернета. Подключись к сети и нажми ещё раз: данные на этом устройстве в безопасности.');return false}}
 function cloudBox(){return CL.u?`<div class="row cl"><span class="mu2">☁ ${esc(CL.u.email)} · <span id="cst">${esc(CL.st)}</span></span><span class="links"><button class="lnk" data-a="resync">Обновить</button><button class="lnk" data-a="logout">Выйти</button></span></div>`
  :`<div class="row cl"><span class="mu2">Данные только на этом устройстве</span><button class="lnk" data-a="login">Войти — данные появятся на всех устройствах</button></div>`}
+const SVG=(d,x)=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+const IC={play:'<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>',stop:'<svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2.5" fill="currentColor"/></svg>',plus:SVG('<path d="M12 5v14M5 12h14"/>'),check:SVG('<path d="M5 12.5l4.5 4.5L19 7.5"/>')};
+function polish(root){(root||document).querySelectorAll('.btn:not([data-p])').forEach(b=>{b.dataset.p=1;if(b.children.length)return;const m=b.textContent.trim().split(/ [—·] /);if(m.length<2)return;
+ const ic=b.classList.contains('p')?`<span class="ic">${b.id==='cOk'?IC.check:IC.plus}</span>`:'';
+ b.innerHTML=ic+'<span class="tx"><b>'+esc(m[0])+'</b><small>'+esc(m.slice(1).join(' · '))+'</small></span><span class="ar">›</span>'})}
+function fitNav(){const n=$('#nav');n.style.bottom='0px';const g=Math.round(innerHeight-n.getBoundingClientRect().bottom);if(g>4&&g<160)n.style.bottom=(-g)+'px'}
+addEventListener('resize',fitNav);addEventListener('orientationchange',()=>setTimeout(fitNav,300));
 const VAPID="BEfixBb3S02vUh-E33xC2AON96voH7liNqYfdvZen5xoKrjfB6yaSy0E8rzC06DB2k7pb03W9YwV9BwNz8exJ40";
 const EV={30:'Каждые 30 минут',60:'Каждый час',120:'Каждые 2 часа',180:'Каждые 3 часа'};
 const PS=()=>{try{return JSON.parse(localStorage.getItem('cl_push'))||{}}catch(e){return{}}};
@@ -252,11 +279,11 @@ let cb=null,opt={};
 const ferr=m=>{$('#derr').textContent=m};
 function ask(title,fields,fn,o){opt=o||{};cb=fn;$('#dt').textContent=title;ferr('');
  $('#df').innerHTML=fields.map(f=>`<label for="f_${f.k}">${f.l}</label>`+(f.o?`<select id="f_${f.k}">${f.o.map(x=>`<option ${x===f.v?'selected':''}>${x}</option>`).join('')}</select>`:`<input id="f_${f.k}" type="${f.t||'text'}" value="${esc(f.v==null?'':f.v)}" placeholder="${f.p||''}"${f.ac?' autocomplete="'+f.ac+'"':''}>`)).join('');
- $('#cOk').textContent=opt.ok||'Сохранить';$('#dlg').fields=fields;$('#dlg').showModal()}
+ {const b=$('#cOk');b.textContent=opt.ok||'Сохранить';delete b.dataset.p;polish(b.parentNode)}$('#dlg').fields=fields;$('#dlg').showModal()}
 $('#cX').onclick=()=>$('#dlg').close();
-$('#cOk').onclick=async()=>{const b=$('#cOk'),o={},t=b.textContent;$('#dlg').fields.forEach(f=>o[f.k]=$('#f_'+f.k).value.trim());ferr('');b.disabled=true;b.textContent=opt.load||'Сохраняю…';let r;
+$('#cOk').onclick=async()=>{const b=$('#cOk'),o={},t=b.innerHTML;$('#dlg').fields.forEach(f=>o[f.k]=$('#f_'+f.k).value.trim());ferr('');b.disabled=true;b.textContent=opt.load||'Сохраняю…';let r;
  try{r=await cb(o)}catch(e){r=false;ferr('Не получилось сохранить. Нажми ещё раз, а если снова ошибка, обнови страницу.')}
- b.disabled=false;b.textContent=t;
+ b.disabled=false;b.innerHTML=t;
  if(r===false){if(!$('#derr').textContent)ferr(opt.err||'Заполни обязательное поле: без него сохранить нельзя.');return}
  if(r!=='skip')save();$('#dlg').close();render();if(opt.done)toast(typeof opt.done==='function'?opt.done(o):opt.done)};
 $('#dlg').addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName==='INPUT')$('#cOk').click()});
