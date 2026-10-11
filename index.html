@@ -21,7 +21,7 @@
 :root[data-theme="light"]{--bg:#f4eee3;--sf:#fffaf0;--ln:rgba(0,0,0,.18);--tx:#1d1812;--mu:#5f5547;--rd:#c8321f;--cy:#9a5a0a;--gl:rgba(255,160,60,.22);color-scheme:light}
 *{box-sizing:border-box}
 html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%}
-body{margin:0;background:radial-gradient(900px 480px at 50% -8%,var(--gl),transparent 70%),var(--bg);background-attachment:fixed;color:var(--tx);font:17px/1.5 Manrope,-apple-system,"Segoe UI",sans-serif;overflow-wrap:break-word}
+body{margin:0;background:var(--bg);color:var(--tx);font:17px/1.5 Manrope,-apple-system,"Segoe UI",sans-serif;overflow-wrap:break-word}
 main{max-width:640px;margin:0 auto;padding:var(--s2) var(--s2) 150px}
 .m,.lab,.big,.btn,.chip,.mu2,#nav button{font-family:"JetBrains Mono",ui-monospace,Consolas,monospace}
 .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--s2)}
@@ -111,9 +111,34 @@ body{min-height:calc(100vh + 2px)}
 .go .tx b{font-size:18px}
 .row.cl{flex-direction:column;align-items:flex-start;gap:0}
 .card .btn{width:100%}
+
+html{background:var(--bg)}
+#glow{position:fixed;inset:0;pointer-events:none;z-index:40;mix-blend-mode:screen;-webkit-transform:translateZ(0);transform:translateZ(0)}
+#glow::before,#glow::after{content:"";position:absolute;inset:0;transition:opacity .9s ease}
+#glow::before{background:radial-gradient(120% 52% at 50% -14%,rgba(255,184,92,.34),rgba(255,140,60,.11) 46%,transparent 74%),radial-gradient(55% 26% at 92% 2%,rgba(255,92,70,.16),transparent 72%)}
+#glow::after{opacity:0;background:radial-gradient(120% 52% at 50% -14%,rgba(255,74,61,.40),rgba(255,74,61,.12) 46%,transparent 74%),radial-gradient(80% 30% at 20% 104%,rgba(255,74,61,.20),transparent 70%)}
+#glow.rec::before{opacity:0}#glow.rec::after{opacity:1}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) #glow{mix-blend-mode:normal;opacity:.5}}
+:root[data-theme="light"] #glow{mix-blend-mode:normal;opacity:.5}
+/* свечение в деталях */
+#nav button.on{background:radial-gradient(70% 95% at 50% 0%,rgba(255,106,92,.22),transparent 76%);box-shadow:inset 0 2px 0 var(--rd),0 -6px 20px -8px rgba(255,74,61,.65)}
+.bar i{box-shadow:0 0 14px var(--cy)}
+.d.t{box-shadow:0 0 16px -4px var(--rd)}
+.chip.c{box-shadow:0 0 12px -3px var(--cy)}
+.card{box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 10px 30px -18px rgba(0,0,0,.8)}
+.live .big{text-shadow:0 0 32px rgba(255,74,61,.55)}
+/* статистика: все три цифры на одном уровне */
+.sec.stats>*+*{margin-top:0}
+.stats{align-items:start}
+.hist{height:44px;margin-bottom:var(--s2)}
+.hist div{background:rgba(255,255,255,.06);border-radius:6px}
+.hist div i{border-radius:6px;box-shadow:0 0 10px -2px var(--cy)}
+.hist div u{position:absolute;top:100%;left:0;right:0;margin-top:4px;text-align:center;text-decoration:none;font:500 10px "JetBrains Mono",monospace;color:var(--mu)}
+.hist div.t u{color:var(--rd);font-weight:700}
 </style>
 </head>
 <body>
+<div id="glow" aria-hidden="true"></div>
 <main>
  <div class="top"><div class="rec m"><i></i>REC · MONTAGE</div><div class="row" style="gap:var(--s1);flex-wrap:nowrap"><div class="tc m" id="tc">00:00:00</div><button class="lnk" id="rf" aria-label="Обновить приложение">↻</button></div></div>
  <div id="banner"></div>
@@ -181,7 +206,7 @@ const hd=(l,b)=>`<div class="row"><div class="lab">${l}</div>${b||''}</div>`;
 const V={
 today(){const wd=weekDays(),se=S.set,g=se.goalMin*60,done=S.projects.filter(p=>p.st===3&&wd.includes(p.doneAt)),act=S.projects.filter(p=>p.st<3).length,f=S.focus.d===tod()?S.focus:{t:'',done:false},dl=se.dreamDate;
  const left=dl?Math.ceil((new Date(dl+'T00:00')-new Date())/864e5):null,tot=totSec()/3600;let li=0;LV.forEach((l,i)=>{if(tot>=l[0])li=i});const nx=LV[li+1],wsec=wd.reduce((a,d)=>a+(S.sec[d]||0),0)+runToday(),hw=Math.floor(wsec/3600)+':'+pad(Math.floor(wsec%3600/60));
- const h=[...Array(7)].map((_,i)=>`<div><i style="height:${Math.min(100,(S.sec[plus(i-6)]||0)/g*100)}%"></i></div>`).join('');
+ const h=[...Array(7)].map((_,i)=>`<div class="${i===6?'t':''}"><i style="height:${Math.min(100,(S.sec[plus(i-6)]||0)/g*100)}%"></i><u>${new Date(plus(i-6)+'T12:00').toLocaleDateString('ru-RU',{weekday:'short'}).slice(0,2).toUpperCase()}</u></div>`).join('');
  return cloudBox()+`
  <section class="sec"><div class="lab" data-a="set" style="cursor:pointer">${left===null?'МОЯ ЦЕЛЬ · ЗАДАЙ ДАТУ ›':left>0?'МОЯ ЦЕЛЬ · ЕЩЁ '+left+' ДН.':'МОЯ ЦЕЛЬ · СРОК ВЫШЕЛ, ОБНОВИ ›'}</div><h1 class="dream" data-a="set">${esc(se.dream||'Нажми и напиши, кем ты хочешь стать')}</h1>${se.why?`<p class="why" data-a="set">«${esc(se.why)}»</p>`:''}</section>
  <section class="sec ${S.timer?'live':''}" id="tpn"><div class="lab row"><span>СЕГОДНЯ В МОНТАЖЕ</span><span>${S.timer?'● ИДЁТ ЗАПИСЬ':''}</span></div><div class="big" id="tm">0:00:00</div><p class="mu2" id="rem"></p><div class="bar"><i id="tb"></i></div>
@@ -217,12 +242,12 @@ idea(){const L=(k,e)=>S[k].map((x,i)=>`<div class="li ${x.done?'dn':''}"><input 
  return `<section class="sec"><div class="lab">ИДЕИ И РЕФЕРЕНСЫ · ${cnt('ideas')}</div>${L('ideas','Пока пусто. Увидел монтаж, который зацепил? Впиши его ниже, и он будет ждать тебя здесь.')}<div class="add"><input data-add="ideas" placeholder="Что хочешь повторить?" enterkeyhint="done"><button class="btn" data-a="addi" data-k="ideas">Добавить</button></div></section>
  <section class="sec"><div class="lab">ПУТЬ К ПЕРВЫМ ДЕНЬГАМ · ${cnt('goals')}</div>${L('goals','Шагов нет. Впиши первый: что приблизит тебя к заказу?')}<div class="add"><input data-add="goals" placeholder="Свой шаг…" enterkeyhint="done"><button class="btn" data-a="addi" data-k="goals">Добавить</button></div></section>`}
 };
-function render(){$('#nav').innerHTML=TABS.map(([k,l])=>`<button class="${k===tab?'on':''}" data-t="${k}">${l}</button>`).join('');$('#view').innerHTML=V[tab]();tick();banner();calc();polish($('#view'));fitNav()}
+function render(){$('#nav').innerHTML=TABS.map(([k,l])=>`<button class="${k===tab?'on':''}" data-t="${k}">${l}</button>`).join('');$('#view').innerHTML=V[tab]();tick();banner();calc();polish($('#view'));fitNav();$('#glow').classList.toggle('rec',!!S.timer)}
 function tick(){const n=new Date();$('#tc').textContent=pad(n.getHours())+':'+pad(n.getMinutes())+':'+pad(n.getSeconds());const s=todaySec(),g=S.set.goalMin*60;
  if($('#tot'))$('#tot').textContent=hm(totSec());
  if($('#tm')){$('#tm').textContent=hm(s);$('#tb').style.width=Math.min(100,s/g*100)+'%';const l=g-s;
   $('#rem').textContent=l>0?'Осталось до цели: '+hm(l):'Цель '+hm(g)+' выполнена. Каждая минута сверху идёт в плюс.';
-  const c=S.timer?['Остановить и сохранить','идёт '+hm(runSec())]:s===0?['Начать монтаж','цель на сегодня '+hm(g)]:l>0?['Продолжить монтаж','осталось '+hm(l)+' до цели']:['Монтировать дальше','цель уже выполнена'];$('#ct').textContent=c[0];$('#cs').textContent=c[1];const ci=S.timer?'stop':'play';if($('#cic').dataset.i!==ci){$('#cic').innerHTML=IC[ci];$('#cic').dataset.i=ci}}}
+  const c=S.timer?['Остановить','идёт '+hm(runSec())+' · время сохранится']:s===0?['Начать монтаж','цель на сегодня '+hm(g)]:l>0?['Продолжить монтаж','осталось '+hm(l)+' до цели']:['Монтировать дальше','цель уже выполнена'];$('#ct').textContent=c[0];$('#cs').textContent=c[1];const ci=S.timer?'stop':'play';if($('#cic').dataset.i!==ci){$('#cic').innerHTML=IC[ci];$('#cic').dataset.i=ci}}}
 function calc(){if($('#cp'))$('#cp').textContent=money(Math.round((+$('#ch').value||0)*(+$('#cr').value||0)))}
 const late=()=>{if(S.timer)return false;const n=new Date();return pad(n.getHours())+':'+pad(n.getMinutes())>=S.set.remind&&todaySec()<600};
 function banner(){const b=$('#banner');b.style.display=late()?'block':'none';b.textContent=tab==='today'?'Время монтажа. Нажми «Начать монтаж» ниже: хватит и 10 минут.':'Время монтажа. Открой «СЕГОДНЯ» и нажми «Начать монтаж»: хватит и 10 минут.'}
