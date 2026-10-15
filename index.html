@@ -135,12 +135,32 @@ html{background:var(--bg)}
 .hist div i{border-radius:6px;box-shadow:0 0 10px -2px var(--cy)}
 .hist div u{position:absolute;top:100%;left:0;right:0;margin-top:4px;text-align:center;text-decoration:none;font:500 10px "JetBrains Mono",monospace;color:var(--mu)}
 .hist div.t u{color:var(--rd);font-weight:700}
+
+#gear{font-size:22px;min-width:44px;text-decoration:none;text-align:center}
+.dream.sm{font-size:clamp(22px,6vw,30px)}
+.pills{display:flex;gap:var(--s1);flex-wrap:wrap;align-items:center}
+.pill{font:600 12px Manrope,sans-serif;border:1px solid var(--ln);border-radius:20px;padding:4px var(--s1);color:var(--mu)}
+.pill.ok{border-color:var(--cy);color:var(--cy);box-shadow:0 0 12px -3px var(--cy)}
+.ctr{display:flex;align-items:center;gap:var(--s1)}
+.ctr b{min-width:40px;text-align:center;font:700 26px "JetBrains Mono",monospace}
+.cb{width:52px;height:52px;border-radius:14px;border:1px solid var(--ln);background:rgba(255,255,255,.04);color:var(--tx);font:700 24px Manrope,sans-serif;cursor:pointer;line-height:1}
+.cb:active{transform:scale(.94)}
+.cb.p{background:linear-gradient(135deg,#ff6b45,#e5392c);border:0;color:#fff;box-shadow:0 6px 16px rgba(229,57,44,.32)}
+.wkrow{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:var(--s1);align-items:center;min-height:48px;padding:var(--s1) 0;border-top:1px solid var(--ln)}
+.wkrow span,.wkrow b{font:500 15px "JetBrains Mono",monospace}
+.wkrow.h{border-top:0;min-height:0}.wkrow.h span{font-size:11px;color:var(--mu);letter-spacing:.08em}
+.wkrow .g{color:var(--cy);font-weight:700}
+.wkrow.t b{color:var(--rd)}.wkrow.f{opacity:.4}
+.li b.m{font:700 22px "JetBrains Mono",monospace}
+.stats span{line-height:1.4}
+.sec>.li+.li,.sec>.wkrow+.wkrow,.sec>.wkrow.h+.wkrow{margin-top:0}
+.sec>.wkrow.h{margin-top:var(--s2)}
 </style>
 </head>
 <body>
 <div id="glow" aria-hidden="true"></div>
 <main>
- <div class="top"><div class="rec m"><i></i>REC · MONTAGE</div><div class="row" style="gap:var(--s1);flex-wrap:nowrap"><div class="tc m" id="tc">00:00:00</div><button class="lnk" id="rf" aria-label="Обновить приложение">↻</button></div></div>
+ <div class="top"><div class="rec m"><i></i>MONTAGE</div><div class="row" style="gap:var(--s1);flex-wrap:nowrap"><div class="tc m" id="tc">00:00:00</div><button class="lnk" id="rf" aria-label="Обновить приложение">↻</button><button class="lnk" id="gear" data-a="cfg" aria-label="Настройки">⋯</button></div></div>
  <div id="banner"></div>
  <div id="view"></div>
 </main>
@@ -152,9 +172,9 @@ html{background:var(--bg)}
 <script>
 const $=s=>document.querySelector(s),KEY='cutlist_v1';
 const ST=['ИДЕЯ','МОНТАЖ','ПРАВКИ','СДАН'],LS=['НАПИСАЛ','ОТВЕТИЛ','СОЗВОН','ЗАКАЗ','ОТКАЗ'];
-const D={projects:[],leads:[],income:[],ideas:[],sec:{},focus:{},timer:null,notified:0,
+const D={msg:{},done:{},projects:[],leads:[],income:[],ideas:[],sec:{},focus:{},timer:null,notified:0,
  goals:['Собрать 5 роликов в портфолио','Оформить Instagram / TikTok / Behance с работами','Выбрать нишу: Reels, YouTube, стримеры, бизнес','Написать 10 потенциальным заказчикам','Назначить цену за ролик','Первый платный заказ'].map(t=>({t,done:false})),
- set:{cur:'BYN (Br)',dream:'',dreamDate:'',why:'',clipGoal:3,goalMin:90,remind:'19:00',outGoal:5,monthGoal:30000,rate:500}};
+ set:{msgGoal:20,doneTypes:['Зум','Рилс экспортирован','Видео сдано'],sheets:{leads:'',mail:'',money:''},cur:'BYN (Br)',dream:'',dreamDate:'',why:'',clipGoal:3,goalMin:90,remind:'19:00',outGoal:5,monthGoal:30000,rate:500}};
 let S;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
 S=Object.assign({},D,S||{});S.set=Object.assign({},D.set,S.set);if(!S.start)S.start=dk(new Date());
 if(S.clips&&S.clips.length&&!S.projects.length)S.projects=S.clips.map((c,i)=>({id:'o'+i,t:c.t,k:c.k==='pay'?'Заказ':c.k,l:c.l||'',st:3,doneAt:c.d}));
@@ -179,7 +199,7 @@ const cur=()=>{const c=S.set.cur||'BYN (Br)';const m=c.match(/\((.+)\)/);return 
 const money=n=>n.toLocaleString('ru-RU')+' '+cur();
 const fmtD=d=>d?d.slice(8)+'.'+d.slice(5,7):'';
 let tab='today';
-const TABS=[['today','СЕГОДНЯ'],['proj','ПРОЕКТЫ'],['lead','ЛИДЫ'],['money','ДЕНЬГИ'],['idea','ИДЕИ']];
+const TABS=[['today','СЕГОДНЯ'],['week','НЕДЕЛЯ'],['proj','ПРОЕКТЫ'],['idea','ПЛАН']];
 const head=(l,b,a)=>`<div class="lab"><span>${l}</span><button class="btn s p" data-a="${a}">${b}</button></div>`;
 function streak(){let n=0,d=new Date();if((S.sec[dk(d)]||0)<600)d.setDate(d.getDate()-1);while((S.sec[dk(d)]||0)>=600){n++;d.setDate(d.getDate()-1)}return n}
 
@@ -192,55 +212,62 @@ function qBox(){const st=streak(),s=todaySec(),g=S.set.goalMin*60,h=new Date().g
  else if(s>=600)C.push(['ТВОЙ ПУТЬ','Ты уже начал: '+hm(s)+'. До цели дня осталось '+hm(g-s)+'.']);
  else if(st>0&&h>=17)C.push(['ТВОЙ ПУТЬ','Серия '+st+' дн. Не ломай её: хватит и 10 минут.']);
  if(!S.projects.some(p=>p.st===3))C.push(['ТВОЙ ПУТЬ','Портфолио пока пустое. Первый сданный ролик это изменит.']);
- if(!S.leads.length)C.push(['ПРО ЗАКАЗЫ','Контактов нет. Добавь одного человека, которому хочешь показать работу.']);
+ {const mm=msgs(tod()),mg=S.set.msgGoal;if(mm<mg)C.push(['ТВОЙ ПУТЬ','Сообщений сегодня '+mm+' из '+mg+'. Каждое сообщение это шанс на заказ.'])}
  const d=Math.floor(new Date().setHours(0,0,0,0)/864e5)%QP.length,all=C.concat(QP.slice(d),QP.slice(0,d)),q=all[qo%all.length];
  return `<div class="lab">${q[0]}</div><blockquote class="quote" data-a="qn" style="margin:0;cursor:pointer">${esc(q[1])}</blockquote><p class="mu2">Нажми на фразу, чтобы увидеть другую</p>`}
-function hot(){const L=[];S.leads.filter(l=>l.st<3&&l.fu&&l.fu<=tod()).forEach(l=>L.push(['Написать: '+l.n,'lead']));
- S.projects.filter(p=>p.st<3&&p.dl&&p.dl<=plus(2)).forEach(p=>L.push([(p.dl<tod()?'Просрочен: ':'Дедлайн '+fmtD(p.dl)+': ')+p.t,'proj']));
- return L.length?`<section class="sec"><div class="lab">ГОРИТ · ${L.length}</div>${L.slice(0,4).map(x=>`<div class="li"><div class="g">${esc(x[0])}</div><button class="lnk" data-t="${x[1]}">Открыть</button></div>`).join('')}</section>`:''}
-function onboard(){const se=S.set,st=[[se.dream,'Напиши свою цель','set'],[totSec()>=60,'Запусти таймер хотя бы на минуту','timer'],[S.projects.length>0,'Добавь первый проект','addp']],n=st.filter(x=>x[0]).length;
- return n===3?'':`<section class="sec"><div class="lab">С ЧЕГО НАЧАТЬ · ${n} ИЗ 3</div>${st.map(x=>`<div class="li"><div class="g">${x[0]?'✓ ':'○ '}${x[1]}</div>${x[0]?'':`<button class="lnk" data-a="${x[2]}">Сделать</button>`}</div>`).join('')}</section>`}
 function backupNote(){const b=S.lastBackup,old=!b||(Date.now()-new Date(b+'T00:00'))/864e5>14;return CL.u?'Облако включено: копия хранится и там.':old?'Данные только на этом устройстве'+(b?'. Копии не было больше 14 дней.':'. Копию ещё не делал.')+' Скачай её или войди в облако.':'Последняя копия: '+fmtD(b)+'.'}
+const msgs=d=>(S.msg&&S.msg[d])||0;
+const hh=s=>Math.floor(s/3600)+':'+pad(Math.floor(s%3600/60));
+const wkKeys=o=>[...Array(7)].map((_,i)=>{const d=ws();d.setDate(d.getDate()+i+o*7);return dk(d)});
+const dsum=d=>Object.values((S.done&&S.done[d])||{}).reduce((a,b)=>a+b,0);
 const nm=p=>p.l?`<a href="${esc(p.l)}" target="_blank" rel="noopener">${esc(p.t)}</a>`:esc(p.t);
 const hd=(l,b)=>`<div class="row"><div class="lab">${l}</div>${b||''}</div>`;
 const V={
-today(){const wd=weekDays(),se=S.set,g=se.goalMin*60,done=S.projects.filter(p=>p.st===3&&wd.includes(p.doneAt)),act=S.projects.filter(p=>p.st<3).length,f=S.focus.d===tod()?S.focus:{t:'',done:false},dl=se.dreamDate;
- const left=dl?Math.ceil((new Date(dl+'T00:00')-new Date())/864e5):null,tot=totSec()/3600;let li=0;LV.forEach((l,i)=>{if(tot>=l[0])li=i});const nx=LV[li+1],wsec=wd.reduce((a,d)=>a+(S.sec[d]||0),0)+runToday(),hw=Math.floor(wsec/3600)+':'+pad(Math.floor(wsec%3600/60));
- const h=[...Array(7)].map((_,i)=>`<div class="${i===6?'t':''}"><i style="height:${Math.min(100,(S.sec[plus(i-6)]||0)/g*100)}%"></i><u>${new Date(plus(i-6)+'T12:00').toLocaleDateString('ru-RU',{weekday:'short'}).slice(0,2).toUpperCase()}</u></div>`).join('');
- return cloudBox()+`
- <section class="sec"><div class="lab" data-a="set" style="cursor:pointer">${left===null?'МОЯ ЦЕЛЬ · ЗАДАЙ ДАТУ ›':left>0?'МОЯ ЦЕЛЬ · ЕЩЁ '+left+' ДН.':'МОЯ ЦЕЛЬ · СРОК ВЫШЕЛ, ОБНОВИ ›'}</div><h1 class="dream" data-a="set">${esc(se.dream||'Нажми и напиши, кем ты хочешь стать')}</h1>${se.why?`<p class="why" data-a="set">«${esc(se.why)}»</p>`:''}</section>
- <section class="sec ${S.timer?'live':''}" id="tpn"><div class="lab row"><span>СЕГОДНЯ В МОНТАЖЕ</span><span>${S.timer?'● ИДЁТ ЗАПИСЬ':''}</span></div><div class="big" id="tm">0:00:00</div><p class="mu2" id="rem"></p><div class="bar"><i id="tb"></i></div>
+today(){const se=S.set,t=tod(),g=se.goalMin*60,s=todaySec(),mg=se.msgGoal,m=msgs(t),dd=S.done[t]||{},ds=dsum(t),dl=se.dreamDate,
+ left=dl?Math.ceil((new Date(dl+'T00:00')-new Date())/864e5):null,ok=[s>=g,m>=mg,ds>0],n=ok.filter(Boolean).length;
+ const stp=se.doneTypes.map((tp,i)=>`<div class="li"><div class="g"><b>${esc(tp)}</b></div><div class="ctr"><button class="cb" data-a="inc" data-k="${i}" data-n="-1" aria-label="Минус">−</button><b>${dd[tp]||0}</b><button class="cb p" data-a="inc" data-k="${i}" data-n="1" aria-label="Плюс">+</button></div></div>`).join('');
+ const sh=[['leads','Лиды'],['mail','Рассылки'],['money','Заработок']].map(([k,l])=>se.sheets[k]?`<a class="lnk" href="${esc(se.sheets[k])}" target="_blank" rel="noopener">${l} ↗</a>`:`<button class="lnk" data-a="sheet" data-k="${k}">+ ${l}: вставить ссылку</button>`).join('');
+ return `<section class="sec"><div class="lab" data-a="set" style="cursor:pointer">${left===null?'МОЯ ЦЕЛЬ · ЗАДАЙ ДАТУ ›':left>0?'МОЯ ЦЕЛЬ · ЕЩЁ '+left+' ДН.':'МОЯ ЦЕЛЬ · СРОК ВЫШЕЛ, ОБНОВИ ›'}</div><h1 class="dream sm" data-a="set">${esc(se.dream||'Нажми и напиши, кем ты хочешь стать')}</h1>
+  <div class="pills"><span class="pill ${ok[0]?'ok':''}">${ok[0]?'✓':'○'} Часы</span><span class="pill ${ok[1]?'ok':''}">${ok[1]?'✓':'○'} Сообщения</span><span class="pill ${ok[2]?'ok':''}">${ok[2]?'✓':'○'} Сделано</span><span class="mu2" style="align-self:center">${n} из 3</span></div></section>
+ <section class="sec ${S.timer?'live':''}" id="tpn"><div class="lab row"><span>ЧАСЫ МОНТАЖА</span><span>${S.timer?'● ИДЁТ ЗАПИСЬ':''}</span></div><div class="big" id="tm">0:00:00</div><p class="mu2" id="rem"></p><div class="bar"><i id="tb"></i></div>
   <button class="btn p go" id="cta" data-a="timer"><span class="ic" id="cic"></span><span class="tx"><b id="ct">Начать монтаж</b><small id="cs"></small></span><span class="ar">›</span></button>
-  <div class="links"><button class="lnk" data-a="tedit">Поправить время</button><button class="lnk" data-a="treset">Сбросить</button><button class="lnk" data-a="tgoal">Цель ${hm(g)} ›</button></div><div class="hist">${h}</div></section>${hot()}${onboard()}
- <section class="sec"><div class="lab">РОЛИКИ НА ЭТОЙ НЕДЕЛЕ</div><div class="big sm">${done.length}<small> из ${se.clipGoal}</small></div><p class="mu2">Всего в портфолио: ${S.projects.filter(p=>p.st===3).length}</p>
-  <div class="days">${wd.map(d=>{const n=S.projects.filter(p=>p.st===3&&p.doneAt===d).length;return `<div class="d ${d===tod()?'t':''}"><em>${new Date(d+'T12:00').toLocaleDateString('ru-RU',{weekday:'short'}).toUpperCase()}</em>${'<i></i>'.repeat(Math.min(n,4))}</div>`}).join('')}</div>
-  <button class="btn" data-a="addp">Добавить проект — станет ${act+1}-м в работе</button></section>
- <section class="sec stats"><div><b>${streak()}</b><span>дней подряд</span></div><div><b>${hw}</b><span>часов за неделю</span></div><div><b>${S.leads.filter(l=>wd.includes(l.added)).length}/${se.outGoal}</b><span>контактов</span></div></section>
- <section class="sec"><div class="lab">ГЛАВНОЕ НА СЕГОДНЯ</div><div class="chk"><input type="checkbox" data-a="fd" ${f.done?'checked':''} aria-label="Выполнено"><input id="foc" value="${esc(f.t)}" placeholder="Одна задача, после которой день не зря"></div><p class="mu2">${f.done?'Готово: главное на сегодня выполнено.':f.t?'Отметь галочкой, когда сделаешь.':'Впиши одну задачу, и она останется здесь до конца дня.'}</p></section>
- <section class="sec">${qBox()}</section>
- <section class="sec"><div class="lab">ВЛОЖЕНО В СЕБЯ</div><div class="big sm" id="tot">0:00:00</div><p class="lvl">${LV[li][1]}${nx?` · ещё ${Math.max(1,Math.ceil(nx[0]-tot))} ч до «${nx[1]}»`:''}</p></section>
- <section class="sec"><div class="lab">ЦЕЛИ И НАПОМИНАНИЯ</div>
-  <div class="li"><div class="g"><b>Монтаж в день</b><br><span class="mu2">${hm(g)}</span></div><button class="lnk" data-a="tgoal">Изменить</button></div>
-  <div class="li"><div class="g"><b>Плашка и сигнал в ${esc(se.remind)}</b><br><span class="mu2">Если к этому времени ты монтировал меньше 10 минут. Работает, пока приложение открыто</span></div><button class="lnk" data-a="trem">Изменить</button></div>
-  <div class="li"><div class="g"><b>Доход в месяц</b><br><span class="mu2">цель ${money(se.monthGoal)} · ставка ${money(se.rate)}/час</span></div><button class="lnk" data-a="mgoal">Изменить</button></div>
-  <div class="li"><div class="g"><b>Напоминания на телефон</b><br><span class="mu2">${pushText()}</span></div><span class="links"><button class="lnk" data-a="pcfg">Настроить</button>${PS().on?'<button class="lnk" data-a="ptest">Проверить</button><button class="lnk" data-a="poff">Выключить</button>':''}</span></div></section>
- <section class="sec"><div class="lab">ДАННЫЕ И ВИД</div><p class="mu2">${backupNote()}</p><div class="links"><button class="lnk" data-a="set">Моя цель и «зачем»</button><button class="lnk" data-a="exp">Скачать копию данных</button><button class="lnk" data-a="imp">Загрузить копию</button><button class="lnk" data-a="thm">Светлая / тёмная тема</button></div></section>`},
+  <div class="links"><button class="lnk" data-a="tedit">Поправить время</button><button class="lnk" data-a="treset">Сбросить</button><button class="lnk" data-a="tgoal">Цель ${hm(g)} ›</button></div></section>
+ <section class="sec"><div class="lab row"><span>СООБЩЕНИЯ СЕГОДНЯ</span><span>${m>=mg?'✓ ЦЕЛЬ':''}</span></div><div class="big sm">${m}<small> из ${mg}</small></div><div class="bar"><i style="width:${Math.min(100,m/mg*100)}%"></i></div>
+  <button class="btn p" data-a="msg" data-n="1">Отправил сообщение · стало ${m+1} из ${mg}</button>
+  <div class="links"><button class="lnk" data-a="msg" data-n="-1">−1</button><button class="lnk" data-a="msg" data-n="5">+5 сразу</button><button class="lnk" data-a="msgset">Поправить число</button><button class="lnk" data-a="msggoal">Цель ${mg} ›</button></div></section>
+ <section class="sec"><div class="lab row"><span>ЧТО СДЕЛАНО СЕГОДНЯ · ${ds}</span><button class="lnk" data-a="types">Изменить список</button></div>${stp}</section>
+ <section class="sec"><div class="lab">МОИ ТАБЛИЦЫ</div><div class="links">${sh}</div></section>
+ <section class="sec">${qBox()}</section>`},
 proj(){const a=S.projects.map((p,i)=>[p,i]),act=a.filter(([p])=>p.st<3).sort((x,y)=>(x[0].dl||'9')>(y[0].dl||'9')?1:-1),dn=a.filter(([p])=>p.st===3).reverse();
  const card=([p,i])=>`<article class="card tight"><div class="row"><b class="nm">${nm(p)}</b><button class="lnk" data-a="del" data-l="projects" data-i="${i}">Удалить</button></div><div class="chips"><span class="chip c">${ST[p.st]}</span><span class="chip">${esc(p.k).toUpperCase()}</span>${p.dl?`<span class="chip ${p.dl<tod()?'r':''}">ДЕДЛАЙН ${fmtD(p.dl)}${p.dl<tod()?' · ПРОСРОЧЕН':''}</span>`:''}</div><div><button class="btn" data-a="nx" data-l="projects" data-i="${i}">${p.st===2?`Сдать: станет роликом №${dn.length+1} в портфолио`:`Перевести в «${ST[p.st+1]}» · этап ${p.st+2} из 4`}</button></div></article>`;
  return `<section class="sec">${hd('В РАБОТЕ · '+act.length,act.length?'<button class="btn" data-a="addp">+ Проект</button>':'')}${act.map(card).join('')||`<div class="empty"><p>Пока ни одного проекта. Даже учебный ролик запустит портфолио.</p><button class="btn p" data-a="addp">Добавить первый проект — цель ${S.set.clipGoal} в неделю</button></div>`}</section>
  <section class="sec">${hd('ПОРТФОЛИО · '+dn.length)}${dn.map(([p,i])=>`<div class="li"><div class="g"><b>${nm(p)}</b><br><span class="mu2">${esc(p.k)} · сдан ${fmtD(p.doneAt)}</span></div><button class="lnk" data-a="del" data-l="projects" data-i="${i}">Удалить</button></div>`).join('')||'<p class="mu2">Здесь появятся сданные ролики. Первый сданный проект станет №1.</p>'}</section>`},
-lead(){const a=S.leads.map((l,i)=>[l,i]).sort((x,y)=>(x[0].fu||'9')>(y[0].fu||'9')?1:-1),wk=weekDays(),n=S.leads.filter(l=>wk.includes(l.added)).length;
- const card=([l,i])=>`<article class="card tight"><div class="row"><b class="nm">${esc(l.n)}</b><button class="lnk" data-a="del" data-l="leads" data-i="${i}">Удалить</button></div><p class="mu2">${esc(l.c)||'где писать, не указано'}</p><div class="chips"><span class="chip ${l.st===3?'c':l.st===4?'':'r'}">${LS[l.st]}</span>${l.st<3&&l.fu?`<span class="chip ${l.fu<=tod()?'r':''}">НАПИСАТЬ ${fmtD(l.fu)}</span>`:''}</div><div class="links"><button class="btn" data-a="nx" data-l="leads" data-i="${i}">Отметить: ${LS[(l.st+1)%5]} · шаг ${(l.st+1)%5+1} из 5</button>${l.st<3&&l.fu?`<button class="lnk" data-a="fu" data-i="${i}">Отложить на 3 дня</button>`:''}</div></article>`;
- return `<section class="sec">${hd('ЗАКАЗЧИКИ И КОНТАКТЫ · '+a.length,a.length?'<button class="btn" data-a="addl">+ Контакт</button>':'')}<p class="mu2">Контактов на этой неделе: ${n} из ${S.set.outGoal}</p>${a.map(card).join('')||`<div class="empty"><p>Контактов пока нет. Блогеры, малый бизнес, стримеры, знакомые: начни с 5 имён.</p><button class="btn p" data-a="addl">Добавить первый контакт — напомню написать завтра</button></div>`}</section>
- <section class="sec"><div class="lab">КАК ПИСАТЬ</div><p>Найди того, кто выкладывает видео, но монтаж у него слабый. Пришли пример его же ролика в твоём монтаже. Это работает лучше любого «могу смонтировать».</p></section>`},
-money(){const m=tod().slice(0,7),mo=S.income.filter(x=>x.d.startsWith(m)).reduce((s,x)=>s+x.a,0),tot=S.income.reduce((s,x)=>s+x.a,0),gl=S.set.monthGoal;
- return `<section class="sec"><div class="lab">В ЭТОМ МЕСЯЦЕ</div><div class="big sm">${money(mo)}</div><div class="bar"><i style="width:${Math.min(100,mo/gl*100)}%"></i></div><p class="mu2">${mo>=gl?'Цель месяца выполнена.':'До цели '+money(gl)+' осталось '+money(gl-mo)+'.'} Всего за всё время: ${money(tot)}.</p>
-  <button class="btn p" data-a="addm">Записать доход — месяц: ${money(mo)}</button><div class="links"><button class="lnk" data-a="mgoal">Изменить цель и валюту</button></div></section>
- <section class="sec"><div class="lab">КАЛЬКУЛЯТОР ЦЕНЫ РОЛИКА</div><div class="calc"><div><label for="ch">Часов на ролик</label><input id="ch" type="number" inputmode="decimal" value="4"></div><div><label for="cr">${esc(cur())} за час</label><input id="cr" type="number" inputmode="decimal" value="${S.set.rate}"></div></div><div class="big sm" id="cp"></div><p class="mu2">Столько стоит ролик, если оценить твоё время.</p></section>
- <section class="sec"><div class="lab">ДОХОДЫ · ${S.income.length}</div>${S.income.map((x,i)=>[x,i]).reverse().map(([x,i])=>`<div class="li"><div class="g"><b>${money(x.a)}</b><br><span class="mu2">${fmtD(x.d)} · ${esc(x.s)||'без подписи'}</span></div><button class="lnk" data-a="del" data-l="income" data-i="${i}">Удалить</button></div>`).join('')||`<p class="mu2">Записей пока нет. Первые заработанные деньги запиши сюда: они сразу пойдут в цель месяца.</p>`}</section>`},
+week(){const wd=weekDays(),pw=wkKeys(-1),g=S.set.goalMin*60,mg=S.set.msgGoal,hs=d=>(S.sec[d]||0)+(d===tod()?runToday():0);
+ const sum=k=>({h:k.reduce((a,d)=>a+hs(d),0),m:k.reduce((a,d)=>a+msgs(d),0),d:k.reduce((a,d)=>a+dsum(d),0)});
+ const w=sum(wd),p=sum(pw),mk=[];{const x=new Date();for(let i=1;i<=x.getDate();i++)mk.push(dk(new Date(x.getFullYear(),x.getMonth(),i)))}const mo=sum(mk);
+ const st=(a,b,pv)=>`<section class="sec stats"><div><b>${hh(a.h)}</b><span>часов${pv?'<br>было '+hh(b.h):''}</span></div><div><b>${a.m}</b><span>сообщений${pv?'<br>было '+b.m:''}</span></div><div><b>${a.d}</b><span>сделано${pv?'<br>было '+b.d:''}</span></div></section>`;
+ const row=d=>{const x=new Date(d+'T12:00');return `<div class="wkrow ${d===tod()?'t':''} ${d>tod()?'f':''}"><b>${x.toLocaleDateString('ru-RU',{weekday:'short'}).toUpperCase()} ${d.slice(8)}</b><span class="${hs(d)>=g?'g':''}">${hh(hs(d))}</span><span class="${msgs(d)>=mg?'g':''}">${msgs(d)}</span><span>${dsum(d)}</span></div>`};
+ const by={};wd.forEach(d=>Object.entries(S.done[d]||{}).forEach(([k,v])=>by[k]=(by[k]||0)+v));
+ const bl=Object.entries(by).filter(([k,v])=>v>0).map(([k,v])=>`<div class="li"><div class="g"><b>${esc(k)}</b></div><b class="m">${v}</b></div>`).join('');
+ return `<section class="sec" style="margin-bottom:var(--s2)"><div class="lab">ЭТА НЕДЕЛЯ</div></section>${st(w,p,1)}
+ <section class="sec"><div class="wkrow h"><span></span><span>часы</span><span>сообщ.</span><span>сделано</span></div>${wd.map(row).join('')}<p class="mu2">Золотым отмечены дни, когда цель выполнена.</p></section>
+ <section class="sec"><div class="lab">СДЕЛАНО ЗА НЕДЕЛЮ</div>${bl||'<p class="mu2">Пока пусто. Отмечай зумы и экспорты на вкладке «Сегодня», и они появятся здесь.</p>'}</section>
+ <section class="sec" style="margin-bottom:var(--s2)"><div class="lab">ЗА МЕСЯЦ</div></section>${st(mo,mo,0)}`},
+cfg(){const se=S.set,z=se.sheets,pt=pushText(),on=PS().on;
+ return `<section class="sec"><button class="lnk" data-a="back">‹ Назад на «Сегодня»</button><div class="lab">НАСТРОЙКИ</div></section>
+ <section class="sec"><div class="lab">ЦЕЛИ НА ДЕНЬ</div>
+  <div class="li"><div class="g"><b>Часы монтажа</b><br><span class="mu2">${hm(se.goalMin*60)} в день</span></div><button class="lnk" data-a="tgoal">Изменить</button></div>
+  <div class="li"><div class="g"><b>Сообщения</b><br><span class="mu2">${se.msgGoal} в день</span></div><button class="lnk" data-a="msggoal">Изменить</button></div>
+  <div class="li"><div class="g"><b>Что считаем «сделано»</b><br><span class="mu2">${esc(se.doneTypes.join(', '))}</span></div><button class="lnk" data-a="types">Изменить</button></div>
+  <div class="li"><div class="g"><b>Плашка и сигнал в ${esc(se.remind)}</b><br><span class="mu2">Если к этому времени ты монтировал меньше 10 минут. Работает, пока приложение открыто</span></div><button class="lnk" data-a="trem">Изменить</button></div></section>
+ <section class="sec"><div class="lab">НАПОМИНАНИЯ НА ТЕЛЕФОН</div><div class="li"><div class="g"><span class="mu2">${pt}</span></div><span class="links"><button class="lnk" data-a="pcfg">Настроить</button>${on?'<button class="lnk" data-a="ptest">Проверить</button><button class="lnk" data-a="poff">Выключить</button>':''}</span></div></section>
+ <section class="sec"><div class="lab">МОЯ ЦЕЛЬ</div><div class="li"><div class="g"><b>${esc(se.dream||'Не задана')}</b><br><span class="mu2">${se.dreamDate?'до '+fmtD(se.dreamDate):'дата не выбрана'}${se.why?' · «'+esc(se.why)+'»':''}</span></div><button class="lnk" data-a="set">Изменить</button></div></section>
+ <section class="sec"><div class="lab">МОИ ТАБЛИЦЫ</div><div class="li"><div class="g"><span class="mu2">Лиды: ${z.leads?'есть':'нет ссылки'} · Рассылки: ${z.mail?'есть':'нет ссылки'} · Заработок: ${z.money?'есть':'нет ссылки'}</span></div><button class="lnk" data-a="sheets">Изменить</button></div></section>
+ <section class="sec"><div class="lab">ОБЛАКО</div>${cloudBox()}</section>
+ <section class="sec"><div class="lab">ДАННЫЕ И ВИД</div><p class="mu2">${backupNote()}</p><div class="links"><button class="lnk" data-a="exp">Скачать копию данных</button><button class="lnk" data-a="imp">Загрузить копию</button><button class="lnk" data-a="thm">Светлая / тёмная тема</button></div></section>`},
 idea(){const L=(k,e)=>S[k].map((x,i)=>`<div class="li ${x.done?'dn':''}"><input type="checkbox" data-a="tog" data-l="${k}" data-i="${i}" ${x.done?'checked':''} aria-label="Отметить"><div class="g">${esc(x.t)}</div><button class="lnk" data-a="del" data-l="${k}" data-i="${i}">Удалить</button></div>`).join('')||`<p class="mu2">${e}</p>`,cnt=k=>S[k].filter(x=>x.done).length+'/'+S[k].length;
  return `<section class="sec"><div class="lab">ИДЕИ И РЕФЕРЕНСЫ · ${cnt('ideas')}</div>${L('ideas','Пока пусто. Увидел монтаж, который зацепил? Впиши его ниже, и он будет ждать тебя здесь.')}<div class="add"><input data-add="ideas" placeholder="Что хочешь повторить?" enterkeyhint="done"><button class="btn" data-a="addi" data-k="ideas">Добавить</button></div></section>
- <section class="sec"><div class="lab">ПУТЬ К ПЕРВЫМ ДЕНЬГАМ · ${cnt('goals')}</div>${L('goals','Шагов нет. Впиши первый: что приблизит тебя к заказу?')}<div class="add"><input data-add="goals" placeholder="Свой шаг…" enterkeyhint="done"><button class="btn" data-a="addi" data-k="goals">Добавить</button></div></section>`}
+ <section class="sec"><div class="lab">ПЛАН МЕСЯЦА · ${cnt('goals')}</div>${L('goals','Пока пусто. Впиши шаги из своего руководства, чтобы отмечать их по мере выполнения.')}<div class="add"><input data-add="goals" placeholder="Шаг плана…" enterkeyhint="done"><button class="btn" data-a="addi" data-k="goals">Добавить</button></div></section>`}
 };
 function render(){$('#nav').innerHTML=TABS.map(([k,l])=>`<button class="${k===tab?'on':''}" data-t="${k}">${l}</button>`).join('');$('#view').innerHTML=V[tab]();tick();banner();calc();polish($('#view'));fitNav();$('#glow').classList.toggle('rec',!!S.timer)}
 function tick(){const n=new Date();$('#tc').textContent=pad(n.getHours())+':'+pad(n.getMinutes())+':'+pad(n.getSeconds());const s=todaySec(),g=S.set.goalMin*60;
@@ -317,9 +344,19 @@ $('#toast').onclick=e=>{if(e.target.hasAttribute('data-toast')&&$('#toast').fn){
 const PRESETS=['BYN (Br)','RUB (₽)','USD ($)','EUR (€)','UAH (₴)','KZT (₸)','PLN (zł)'];
 const A={
  qn(){qo++;render();return 1},
+ cfg(){tab='cfg';render();scrollTo(0,0);return 1},
+ back(){tab='today';render();scrollTo(0,0);return 1},
+ msg(e){const t=tod(),b=msgs(t),a=Math.max(0,b+e.n);S.msg[t]=a;if(b<S.set.msgGoal&&a>=S.set.msgGoal)toast('Цель по сообщениям выполнена: '+a+' из '+S.set.msgGoal+'.')},
+ msgset(){ask('Сообщений сегодня',[{k:'n',l:'Сколько всего отправил сегодня',t:'number',v:msgs(tod())}],o=>{if(o.n===''||+o.n<0){ferr('Впиши число от 0.');return false}S.msg[tod()]=Math.round(+o.n)},{ok:'Сохранить — счётчик покажет новое число',done:()=>'Сообщений сегодня: '+msgs(tod())+'.'})},
+ msggoal(){ask('Цель по сообщениям',[{k:'n',l:'Сколько сообщений в день',t:'number',v:S.set.msgGoal}],o=>{if(!(+o.n>0)){ferr('Впиши число больше нуля.');return false}S.set.msgGoal=Math.round(+o.n)},{ok:'Сохранить цель — счётчик пересчитается',done:()=>'Цель: '+S.set.msgGoal+' сообщений в день.'})},
+ inc(e){const t=tod(),tp=S.set.doneTypes[+e.k];S.done[t]=S.done[t]||{};S.done[t][tp]=Math.max(0,(S.done[t][tp]||0)+e.n)},
+ types(){ask('Что считаем «сделано»',[{k:'l',l:'Список через запятую',v:S.set.doneTypes.join(', '),p:'Зум, Рилс экспортирован, Видео сдано'}],o=>{const l=[...new Set(o.l.split(',').map(x=>x.trim()).filter(Boolean))];if(!l.length){ferr('Впиши хотя бы один пункт.');return false}S.set.doneTypes=l},{ok:'Сохранить список — кнопки появятся на «Сегодня»',done:()=>'Пунктов в списке: '+S.set.doneTypes.length+'.'})},
+ sheet(e){const u=S.set.sheets[e.k];if(u){window.open(u,'_blank','noopener');return 1}A.sheets()},
+ sheets(){const z=S.set.sheets;ask('Мои таблицы',[{k:'leads',l:'Таблица лидов (ссылка)',v:z.leads,p:'https://docs.google.com/spreadsheets/…'},{k:'mail',l:'Таблица рассылок (ссылка)',v:z.mail},{k:'money',l:'Монтаж и заработок (ссылка)',v:z.money}],o=>{for(const k of ['leads','mail','money']){if(o[k]&&!/^https?:\/\//i.test(o[k])){ferr('Ссылка должна начинаться с https://');return false}}S.set.sheets={leads:o.leads,mail:o.mail,money:o.money}},{ok:'Сохранить ссылки — таблицы откроются одним нажатием',done:'Ссылки сохранены. Теперь таблицы открываются с главного экрана.'})},
+
  pcfg(){const p=PS(),ios=/iPhone|iPad|iPod/.test(navigator.userAgent),stand=navigator.standalone===true||matchMedia('(display-mode: standalone)').matches;
   ask('Напоминания на телефон',[{k:'ev',l:'Как часто',o:Object.values(EV),v:EV[p.every||120]},{k:'from',l:'Не раньше',t:'time',v:p.from||'10:00'},{k:'to',l:'Не позже',t:'time',v:p.to||'22:00'},{k:'only',l:'Когда напоминать',o:['Пока цель дня не выполнена','Всегда'],v:p.only===false?'Всегда':'Пока цель дня не выполнена'}],async o=>{
-   if(!CL.u){ferr('Сначала войди в облако: на вкладке «Сегодня» нажми «Войти».');return false}
+   if(!CL.u){ferr('Сначала войди в облако: нажми «⋯» вверху, в разделе «Облако» выбери «Войти».');return false}
    if(ios&&!stand){ferr('На iPhone сначала добавь сайт на экран «Домой» и открой его с иконки.');return false}
    if(!('PushManager' in window)||typeof Notification==='undefined'){ferr('Этот браузер не умеет пуш-уведомления. Открой приложение с иконки «Домой».');return false}
    if(!o.from||!o.to||o.from>=o.to){ferr('Время «не раньше» должно быть меньше времени «не позже».');return false}
@@ -334,7 +371,6 @@ const A={
 
  tgoal(){const g=S.set.goalMin;ask('Сколько монтировать в день',[{k:'t',l:'Время в день (часы:минуты)',t:'time',v:pad(Math.floor(g/60))+':'+pad(g%60)}],o=>{const m=(o.t||'').split(':').map(Number),v=m[0]*60+m[1];if(!(v>0)){ferr('Выбери время больше нуля, например 01:30.');return false}S.set.goalMin=v},{ok:'Сохранить цель — таймер будет считать от неё',done:o=>'Цель на день: '+hm(S.set.goalMin*60)+'.'})},
  trem(){const r=S.set.remind;ask('Когда напоминать',[{k:'t',l:'Время напоминания',t:'time',v:r.length===4?'0'+r:r}],o=>{if(!o.t){ferr('Выбери время напоминания.');return false}S.set.remind=o.t},{ok:'Сохранить — напомню в выбранное время',done:'Напомню в '+S.set.remind+', если не начнёшь монтаж.'})},
- mgoal(){const s=S.set;ask('Доход и валюта',[{k:'cur',l:'Валюта',o:PRESETS,v:s.cur},{k:'monthGoal',l:'Цель дохода в месяц',t:'number',v:s.monthGoal},{k:'rate',l:'Ставка за час монтажа',t:'number',v:s.rate}],o=>{s.cur=o.cur;if(+o.monthGoal>0)s.monthGoal=+o.monthGoal;if(+o.rate>0)s.rate=+o.rate},{ok:'Сохранить — суммы пересчитаются',done:()=>'Цель месяца: '+money(S.set.monthGoal)+'.'})},
  treset(){if(!confirm('Сбросить время за сегодня до 0:00:00?'))return 1;const ps=S.sec[tod()],pt=S.timer;S.sec[tod()]=0;if(S.timer)S.timer=Date.now();toast('Время за сегодня сброшено до 0:00:00.',{act:'Вернуть',fn:()=>{S.sec[tod()]=ps;S.timer=pt;save();render()}})},
  tedit(){ask('Время за сегодня',[{k:'t',l:'Всего за сегодня (ч:мм:сс), например 1:30:00',v:hm(todaySec()),p:'1:30:00'}],o=>{const m=o.t.split(':').map(Number);if(!o.t||m.length>3||m.some(x=>isNaN(x)||x<0)){ferr('Формат: часы:минуты:секунды, например 1:30:00.');return false}
   const sec=m.length===3?m[0]*3600+m[1]*60+m[2]:m.length===2?m[0]*3600+m[1]*60:m[0]*60;S.sec[tod()]=Math.max(0,sec-runToday())},{ok:'Сохранить время — таймер покажет его сразу',done:()=>'Время за сегодня: '+hm(todaySec())+'.'})},
@@ -344,11 +380,8 @@ const A={
  fd(){S.focus={d:tod(),t:S.focus.d===tod()?S.focus.t:'',done:!(S.focus.d===tod()&&S.focus.done)}},
  timer(){qo=0;if(S.timer){const s=runSec();addTime(S.timer,Date.now());S.timer=null;toast('Сохранено '+hm(s)+'. Сегодня всего '+hm(todaySec())+' из '+hm(S.set.goalMin*60)+'.'+(s>14400?' Таймер шёл больше 4 часов. Если забыл остановить, нажми «Поправить время».':''))}else{S.timer=Date.now();toast('Таймер запущен. Нажми «Остановить», когда закончишь: время запишется.')}},
  addp(){ask('Новый проект',[{k:'t',l:'Название'},{k:'k',l:'Тип',o:['Практика','Заказ','Для себя','Разбор референса']},{k:'dl',l:'Дедлайн (необязательно)',t:'date'},{k:'l',l:'Ссылка (необязательно)',p:'https://'}],o=>{if(!o.t){ferr('Впиши название проекта.');return false}S.projects.push({id:Date.now(),t:o.t,k:o.k,dl:o.dl,l:o.l,st:0})},{ok:'Добавить проект — попадёт в «В работе»',done:()=>'Проект добавлен. В работе теперь: '+S.projects.filter(p=>p.st<3).length+'. Дальше жми «Перевести в МОНТАЖ».'})},
- addl(){ask('Новый контакт',[{k:'n',l:'Имя или канал'},{k:'c',l:'Где писать (Instagram, Telegram…)'},{k:'fu',l:'Написать',t:'date',v:plus(1)}],o=>{if(!o.n){ferr('Впиши имя или название канала.');return false}S.leads.push({n:o.n,c:o.c,st:0,fu:o.fu,added:tod()})},{ok:'Добавить контакт — напомню написать в срок',done:o=>'Контакт добавлен. Напиши ему '+fmtD(o.fu)+'.'})},
- addm(){ask('Доход',[{k:'a',l:'Сумма, '+cur(),t:'number'},{k:'s',l:'От кого / за что'}],o=>{if(!+o.a){ferr('Впиши сумму больше нуля.');return false}S.income.push({a:+o.a,s:o.s,d:tod()})},{ok:'Записать доход — пойдёт в цель месяца',done:o=>{const m=tod().slice(0,7);return 'Записано '+money(+o.a)+'. За месяц уже '+money(S.income.filter(x=>x.d.startsWith(m)).reduce((s,x)=>s+x.a,0))+'.'}})},
- set(){const s=S.set;ask('Моя цель',[{k:'dream',l:'Цель одной фразой',v:s.dream,p:'Стать монтажёром, к которому стоит очередь'},{k:'dreamDate',l:'К какой дате',t:'date',v:s.dreamDate||plus(365)},{k:'why',l:'Ради чего я это делаю',v:s.why,p:'Свобода, семья, доказать себе…'},{k:'clipGoal',l:'Роликов в неделю',t:'number',v:s.clipGoal},{k:'outGoal',l:'Новых контактов в неделю',t:'number',v:s.outGoal}],o=>{Object.keys(o).forEach(k=>{if(o[k])S.set[k]=['dream','dreamDate','why'].includes(k)?o[k]:+o[k]})},{ok:'Сохранить — цель появится на главном экране',done:'Цель сохранена. Она теперь первая, что ты видишь.'})},
+ set(){const s=S.set;ask('Моя цель',[{k:'dream',l:'Цель одной фразой',v:s.dream,p:'Стать монтажёром, к которому стоит очередь'},{k:'dreamDate',l:'К какой дате',t:'date',v:s.dreamDate||plus(365)},{k:'why',l:'Ради чего я это делаю',v:s.why,p:'Свобода, семья, доказать себе…'}],o=>{Object.keys(o).forEach(k=>{if(o[k])S.set[k]=['dream','dreamDate','why'].includes(k)?o[k]:+o[k]})},{ok:'Сохранить — цель появится на главном экране',done:'Цель сохранена. Она теперь первая, что ты видишь.'})},
  nx(e){const a=S[e.l][e.i];if(e.l==='projects'){a.st=Math.min(3,a.st+1);if(a.st===3){a.doneAt=tod();toast('Проект сдан. Роликов в портфолио: '+S.projects.filter(p=>p.st===3).length+'.')}}else a.st=(a.st+1)%5},
- fu(e){S.leads[e.i].fu=plus(3);toast('Напомню написать '+fmtD(S.leads[e.i].fu)+'.')},
  del(e){const x=S[e.l].splice(e.i,1)[0],l=e.l,i=e.i;toast('Удалено.',{act:'Вернуть',fn:()=>{S[l].splice(i,0,x);save();render()}})},
  tog(e){S[e.l][e.i].done=!S[e.l][e.i].done},
  addi(e){const i=$('[data-add="'+e.k+'"]');if(!i.value.trim()){toast('Сначала впиши текст в поле, потом нажми «Добавить».');i.focus();return 1}S[e.k].push({t:i.value.trim(),done:false});toast('Добавлено. Всего: '+S[e.k].length+'.')},
@@ -358,7 +391,7 @@ const A={
 };
 document.addEventListener('click',e=>{const t=e.target.closest('[data-t],[data-a]');if(!t)return;
  if(t.dataset.t){tab=t.dataset.t;render();scrollTo(0,0);return}
- const f=A[t.dataset.a];if(!f)return;const r=f({l:t.dataset.l,i:+t.dataset.i,k:t.dataset.k});if(r===1||$('#dlg').open)return;save();render()});
+ const f=A[t.dataset.a];if(!f)return;const r=f({l:t.dataset.l,i:+t.dataset.i,k:t.dataset.k,n:+t.dataset.n});if(r===1||$('#dlg').open)return;save();render()});
 document.addEventListener('change',e=>{if(e.target.id==='foc'){S.focus={d:tod(),t:e.target.value,done:S.focus.d===tod()&&S.focus.done};save()}});
 document.addEventListener('input',e=>{if(e.target.id==='ch'||e.target.id==='cr')calc()});
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.dataset.add){S[e.target.dataset.add].push(e.target.value.trim()?{t:e.target.value.trim(),done:false}:null);S[e.target.dataset.add]=S[e.target.dataset.add].filter(Boolean);save();render()}});
