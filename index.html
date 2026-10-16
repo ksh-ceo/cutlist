@@ -8,159 +8,143 @@
 <link rel="apple-touch-icon" href="icon-180.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="MONTAGE">
+<meta name="apple-mobile-web-app-title" content="KSH">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#0a0908">
-<title>MONTAGE</title>
+<meta name="theme-color" content="#0b0905">
+<title>KSH — Монтаж</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@400;600;800&family=Playfair+Display:ital,wght@1,600;1,800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap&subset=cyrillic" rel="stylesheet">
 <style>
-:root{--s1:8px;--s2:24px;--s3:clamp(64px,12vw,96px);--bg:#0a0908;--sf:#17140f;--ln:rgba(255,255,255,.16);--tx:#f3ece1;--mu:#a29a8d;--rd:#ff6a5c;--cta:#e5392c;--cy:#ffb454;--gl:rgba(255,180,84,.16);color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
-@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#f4eee3;--sf:#fffaf0;--ln:rgba(0,0,0,.18);--tx:#1d1812;--mu:#5f5547;--rd:#c8321f;--cy:#9a5a0a;--gl:rgba(255,160,60,.22);color-scheme:light}}
-:root[data-theme="light"]{--bg:#f4eee3;--sf:#fffaf0;--ln:rgba(0,0,0,.18);--tx:#1d1812;--mu:#5f5547;--rd:#c8321f;--cy:#9a5a0a;--gl:rgba(255,160,60,.22);color-scheme:light}
+:root{--s1:8px;--s2:24px;--s3:clamp(56px,11vw,88px);--bg:#0b0905;--sf:rgba(255,255,255,.035);--ln:rgba(255,255,255,.10);--tx:#f4efe6;--mu:#9d9585;--rd:#ff5a4a;--y:#ffb400;--cy:#ffb400;--gl:rgba(255,180,0,.5);color-scheme:dark;box-sizing:border-box}
 *{box-sizing:border-box}
-html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--tx);font:17px/1.5 Manrope,-apple-system,"Segoe UI",sans-serif;overflow-wrap:break-word}
-main{max-width:640px;margin:0 auto;padding:var(--s2) var(--s2) 150px}
-.m,.lab,.big,.btn,.chip,.mu2,#nav button{font-family:"JetBrains Mono",ui-monospace,Consolas,monospace}
-.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--s2)}
-.rec{display:flex;align-items:center;gap:var(--s1);font-weight:700;letter-spacing:.14em;font-size:13px}
-.rec i{width:10px;height:10px;border-radius:50%;background:var(--rd);animation:b 1.4s infinite}
-@keyframes b{50%{opacity:.25}}
-.tc{font-size:20px;color:var(--mu)}
-.sec{margin-bottom:var(--s3)}.sec>*+*{margin-top:var(--s2)}
-.cl{margin-bottom:var(--s2);flex-direction:column;align-items:flex-start;gap:0}
-.row{display:flex;justify-content:space-between;align-items:center;gap:var(--s2);flex-wrap:wrap}
-.lab{font-size:12px;letter-spacing:.14em;color:var(--mu);font-weight:500;text-transform:uppercase}
-.dream{font:italic 800 clamp(26px,7vw,38px)/1.15 "Playfair Display",Georgia,serif;margin:0;cursor:pointer}
-.why{font:italic 400 18px/1.5 "Playfair Display",Georgia,serif;color:var(--mu);margin:0;cursor:pointer}
-.big{font-weight:700;font-size:clamp(52px,16vw,88px);line-height:1;letter-spacing:-.02em;text-shadow:0 0 36px var(--gl)}
-.big.sm{font-size:clamp(36px,10vw,52px)}.big small{font-size:18px;color:var(--mu);font-weight:500}
-.live .big{color:var(--rd)}.live .lab span:last-child{color:var(--rd)}
-.mu2{font-size:13px;color:var(--mu);line-height:1.5;margin:0}
-p{margin:0}
-.bar{height:6px;background:var(--ln);border-radius:6px;overflow:hidden}.bar i{display:block;height:100%;background:var(--cy);width:0}
-.btn{min-height:52px;padding:0 var(--s2);border-radius:12px;border:1px solid var(--ln);background:transparent;color:var(--tx);font-weight:700;font-size:14px;letter-spacing:.02em;cursor:pointer;line-height:1.3;text-align:center}
-.btn:hover{border-color:var(--cy)}.btn:disabled{opacity:.6;cursor:wait}
-.btn.p{background:var(--cta);border-color:var(--cta);color:#fff}
-.go{width:100%;min-height:60px;font-size:15px;position:sticky;bottom:calc(56px + var(--s1) + env(safe-area-inset-bottom,0px));z-index:4;box-shadow:0 8px 24px rgba(0,0,0,.4)}
-.lnk{min-height:44px;padding:0;background:none;border:0;color:var(--mu);text-decoration:underline;text-underline-offset:4px;font:600 14px Manrope,sans-serif;cursor:pointer;text-align:left}
-.lnk:hover{color:var(--cy)}
-.links{display:flex;flex-wrap:wrap;gap:var(--s1) var(--s2);align-items:center}
-.card{background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:var(--s2)}
-.tight>*+*{margin-top:var(--s1)}
-.card+.card{margin-top:var(--s2)}
-.nm{font-size:18px}.nm a{color:inherit}
-.chips{display:flex;gap:var(--s1);flex-wrap:wrap}
-.chip{font-size:11px;letter-spacing:.06em;border:1px solid var(--ln);border-radius:20px;padding:2px var(--s1);color:var(--mu)}
-.chip.r{border-color:var(--rd);color:var(--rd)}.chip.c{border-color:var(--cy);color:var(--cy)}
-.li{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s1) var(--s2);padding:var(--s1) 0;min-height:56px;border-top:1px solid var(--ln)}
-.li .g{flex:1 1 200px;min-width:0}.li.dn .g{text-decoration:line-through;color:var(--mu)}
-.empty>*+*{margin-top:var(--s2)}
-.days{display:grid;grid-template-columns:repeat(7,1fr);gap:var(--s1)}
-.d{height:56px;border:1px solid var(--ln);border-radius:8px;position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:2px;padding:4px}
-.d i{display:block;height:8px;background:var(--cy);border-radius:2px}
-.d em{position:absolute;top:4px;left:4px;font:500 10px "JetBrains Mono",monospace;color:var(--mu);font-style:normal}
-.d.t{border-color:var(--rd)}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s2)}
-.stats b{display:block;font:700 28px "JetBrains Mono",monospace}.stats span{font-size:13px;color:var(--mu)}
-.hist{display:flex;gap:var(--s1);align-items:flex-end;height:40px}.hist div{flex:1;background:var(--ln);border-radius:3px;position:relative;height:100%}.hist i{position:absolute;left:0;right:0;bottom:0;background:var(--cy);border-radius:3px}
-.quote{border-left:2px solid var(--cy);padding-left:var(--s2);font:italic 400 20px/1.5 "Playfair Display",Georgia,serif}
-.lvl{color:var(--cy);font-weight:600;font-size:15px}
-.chk,.add{display:flex;gap:var(--s2);align-items:center}.add input{flex:1}
-.calc{display:grid;grid-template-columns:1fr 1fr;gap:var(--s2)}
-label{display:block;margin-bottom:var(--s1);font-size:14px;color:var(--mu)}
-input,select{font:inherit;font-size:17px;background:var(--bg);color:var(--tx);border:1px solid var(--ln);border-radius:12px;padding:0 var(--s1);min-height:52px;width:100%}
-select option{background:var(--sf);color:var(--tx)}
-input[type=checkbox]{width:26px;min-height:26px;height:26px;accent-color:var(--cy);flex:none}
-input:focus,select:focus,button:focus-visible{outline:2px solid var(--cy);outline-offset:2px}
-#banner{display:none;border-left:3px solid var(--rd);padding-left:var(--s2);margin-bottom:var(--s2);color:var(--rd);font-weight:600}
-#nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--bg);border-top:1px solid var(--ln);padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
-#nav button{flex:1;max-width:144px;margin:0 auto;min-height:56px;background:none;border:0;color:var(--mu);font-weight:700;font-size:11px;letter-spacing:.08em;cursor:pointer;box-shadow:inset 0 2px 0 transparent}
-#nav button.on{color:var(--rd);box-shadow:inset 0 2px 0 var(--rd)}
-dialog{background:var(--sf);color:var(--tx);border:1px solid var(--ln);border-radius:20px;width:min(92vw,440px);padding:var(--s2);max-height:90vh;overflow:auto}
-dialog::backdrop{background:rgba(0,0,0,.7)}
-dialog h2{margin:0 0 var(--s1);font-size:22px}
-dialog label{margin-top:var(--s2)}
-#derr{color:var(--rd);font-size:14px;min-height:24px;margin-top:var(--s2)}
-.acts{display:flex;flex-direction:column-reverse;align-items:stretch;gap:var(--s1);margin-top:var(--s1)}.acts .lnk{text-align:center;justify-content:center}
-#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--s2) + 72px + env(safe-area-inset-bottom,0px));background:var(--sf);border:1px solid var(--cy);border-radius:12px;padding:var(--s1) var(--s2);z-index:20;display:none;align-items:center;gap:var(--s2);width:min(92vw,560px);font-size:15px}
-#toast.on{display:flex}#toast button{background:none;border:0;color:var(--cy);font:700 14px Manrope,sans-serif;min-height:44px;cursor:pointer;text-decoration:underline}
-@media(max-width:380px){.calc{grid-template-columns:1fr}}
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-body::before{content:'';position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:30}
-#rf{font-size:22px;min-width:44px;text-decoration:none;text-align:center}
-body{min-height:calc(100vh + 2px)}
+html{background:var(--bg);scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%}
+body{margin:0;background:transparent;color:var(--tx);font:400 17px/1.55 Manrope,-apple-system,"Segoe UI",sans-serif;overflow-wrap:break-word;font-variant-numeric:tabular-nums;min-height:calc(100vh + 2px)}
 @supports (min-height:100dvh){body{min-height:calc(100dvh + 2px)}}
-
-.btn{display:flex;align-items:center;justify-content:center;gap:var(--s1);background:rgba(255,255,255,.04);border:1px solid var(--ln);border-radius:16px;font:700 15px Manrope,sans-serif;letter-spacing:0;text-align:center;transition:transform .12s,border-color .2s,box-shadow .2s}
-.btn:active{transform:scale(.985)}
+body::before{content:'';position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:30}
+#glow{position:fixed;inset:0;pointer-events:none;z-index:0}
+#glow::before,#glow::after{content:"";position:absolute;inset:0;transition:opacity .9s ease}
+#glow::before{background:radial-gradient(75% 55% at 50% -6%,rgba(170,112,8,.46),rgba(100,62,4,.18) 55%,transparent 82%),radial-gradient(70% 40% at 50% 108%,rgba(70,42,4,.55),transparent 72%)}
+#glow::after{opacity:0;background:radial-gradient(75% 55% at 50% -6%,rgba(255,106,40,.34),rgba(150,50,20,.14) 55%,transparent 82%),radial-gradient(70% 40% at 50% 108%,rgba(120,40,10,.45),transparent 72%)}
+#glow.rec::before{opacity:0}#glow.rec::after{opacity:1}
+#grain{position:fixed;inset:0;pointer-events:none;z-index:41;opacity:.10;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E")}
+main{position:relative;z-index:1;max-width:640px;margin:0 auto;padding:calc(var(--s2) + env(safe-area-inset-top,0px)) var(--s2) 160px}
+p{margin:0}
+/* шапка */
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--s3);min-height:42px}
+.rec{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.55em;font-size:11px;color:var(--mu)}
+.rec i{display:none;width:8px;height:8px;border-radius:50%;background:var(--rd);box-shadow:0 0 12px var(--rd);animation:b 1.4s infinite}
+body.live .rec i{display:block}
+@keyframes b{50%{opacity:.25}}
+.tr{display:flex;align-items:center;gap:var(--s1)}
+.tc{font-size:13px;color:var(--mu);margin-right:6px;letter-spacing:.04em}
+.rb{width:42px;height:42px;min-height:42px;border-radius:50%;border:1px solid var(--ln);background:rgba(255,255,255,.04);display:grid;place-items:center;text-decoration:none!important;color:var(--mu);font-size:18px;padding:0;cursor:pointer;line-height:1}
+.rb:hover{border-color:var(--y);color:var(--y)}
+/* типографика */
+.sec{margin-bottom:var(--s3)}.sec>*+*{margin-top:var(--s2)}
+.lab{font-size:12px;letter-spacing:.22em;color:var(--y);font-weight:800;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.ct{text-align:center}.ct .lab{justify-content:center}
+.row{display:flex;justify-content:space-between;align-items:center;gap:var(--s2);flex-wrap:wrap}
+.cl,.row.cl{flex-direction:column;align-items:flex-start;gap:0;margin-bottom:var(--s2)}
+.eye{font-size:12px;letter-spacing:.22em;color:var(--y);font-weight:800;text-transform:uppercase;cursor:default}
+.dream{margin-top:14px!important;font:300 clamp(24px,6.4vw,38px)/1.2 Manrope,sans-serif;letter-spacing:-.01em;margin:0;cursor:pointer;color:var(--tx)}
+.big{font:800 clamp(56px,18vw,118px)/1 Manrope,sans-serif;letter-spacing:-.035em;color:#fff;text-shadow:0 0 16px rgba(255,255,255,.32),0 0 64px var(--gl)}
+.big.sm{font-size:clamp(44px,13vw,72px)}
+.big small{font-size:18px;color:var(--mu);font-weight:500;letter-spacing:0;text-shadow:none}
+.live .big{text-shadow:0 0 18px rgba(255,255,255,.5),0 0 72px rgba(255,110,40,.8)}
+.live .eye.st{color:var(--rd)}
+.mu2{font-size:14px;color:var(--mu);line-height:1.55;margin:0}
+.bar{height:4px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden;max-width:420px;margin-left:auto;margin-right:auto}
+.bar i{display:block;height:100%;background:var(--y);width:0;box-shadow:0 0 14px var(--y);border-radius:4px}
+/* кнопки-таблетки */
+.btn{display:flex;align-items:center;justify-content:center;gap:var(--s1);min-height:58px;padding:0 28px;border-radius:999px;border:1px solid var(--ln);background:rgba(255,255,255,.04);color:var(--tx);font:700 15px Manrope,sans-serif;text-align:center;line-height:1.3;cursor:pointer;text-decoration:none;transition:transform .12s,border-color .2s,box-shadow .2s,filter .2s}
+.btn:hover{border-color:rgba(255,180,0,.55)}.btn:active{transform:scale(.985)}.btn:disabled{opacity:.6;cursor:wait}
+.btn.p{background:var(--y);border-color:var(--y);color:#1a1200;min-height:64px;box-shadow:0 0 44px -6px rgba(255,180,0,.45)}
+.btn.p:hover{filter:brightness(1.07)}
 .btn .tx{display:flex;flex-direction:column;gap:2px;flex:1;text-align:left}
 .btn .tx b{font:800 16px/1.25 Manrope,sans-serif}
 .btn .tx small{font:500 12px/1.35 Manrope,sans-serif;color:var(--mu)}
-.btn .ar{font-size:22px;opacity:.6;flex:none;line-height:1;margin-left:var(--s1)}
-.btn .ic{margin-right:var(--s1);width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.22);display:grid;place-items:center;flex:none}
-.btn .ic svg{width:18px;height:18px}
-.btn.p{background:linear-gradient(135deg,#ff6b45 0%,#e5392c 55%,#c92a46 100%);border:0;color:#fff;min-height:68px;padding:var(--s1) var(--s2);box-shadow:0 8px 22px rgba(229,57,44,.32),inset 0 1px 0 rgba(255,255,255,.28)}
-.btn.p .tx small{color:rgba(255,255,255,.82)}
-.btn.p .ar{opacity:.85}
-.btn.p:hover{filter:brightness(1.08)}
-.go{min-height:76px;border-radius:20px}
-.go .ic{width:48px;height:48px}.go .ic svg{width:22px;height:22px}
+.btn.p .tx small{color:rgba(26,18,0,.68)}
+.btn .ar{font-size:22px;opacity:.55;flex:none;line-height:1;margin-left:var(--s1)}
+.btn.p .ar{opacity:.7}
+.btn .ic{margin-right:6px;width:40px;height:40px;border-radius:50%;background:#1a1204;color:var(--y);display:grid;place-items:center;flex:none}
+.btn .ic svg{width:17px;height:17px}
+.go{width:100%;max-width:420px;margin-left:auto;margin-right:auto;min-height:72px}
+.go .ic{width:46px;height:46px}.go .ic svg{width:20px;height:20px}
 .go .tx b{font-size:18px}
-.row.cl{flex-direction:column;align-items:flex-start;gap:0}
+.ct .btn.p{width:100%;max-width:420px;margin-left:auto;margin-right:auto}
 .card .btn{width:100%}
-
-html{background:var(--bg)}
-#glow{position:fixed;inset:0;pointer-events:none;z-index:40;mix-blend-mode:screen;-webkit-transform:translateZ(0);transform:translateZ(0)}
-#glow::before,#glow::after{content:"";position:absolute;inset:0;transition:opacity .9s ease}
-#glow::before{background:radial-gradient(120% 52% at 50% -14%,rgba(255,184,92,.34),rgba(255,140,60,.11) 46%,transparent 74%),radial-gradient(55% 26% at 92% 2%,rgba(255,92,70,.16),transparent 72%)}
-#glow::after{opacity:0;background:radial-gradient(120% 52% at 50% -14%,rgba(255,74,61,.40),rgba(255,74,61,.12) 46%,transparent 74%),radial-gradient(80% 30% at 20% 104%,rgba(255,74,61,.20),transparent 70%)}
-#glow.rec::before{opacity:0}#glow.rec::after{opacity:1}
-@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) #glow{mix-blend-mode:normal;opacity:.5}}
-:root[data-theme="light"] #glow{mix-blend-mode:normal;opacity:.5}
-/* свечение в деталях */
-#nav button.on{background:radial-gradient(70% 95% at 50% 0%,rgba(255,106,92,.22),transparent 76%);box-shadow:inset 0 2px 0 var(--rd),0 -6px 20px -8px rgba(255,74,61,.65)}
-.bar i{box-shadow:0 0 14px var(--cy)}
-.d.t{box-shadow:0 0 16px -4px var(--rd)}
-.chip.c{box-shadow:0 0 12px -3px var(--cy)}
-.card{box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 10px 30px -18px rgba(0,0,0,.8)}
-.live .big{text-shadow:0 0 32px rgba(255,74,61,.55)}
-/* статистика: все три цифры на одном уровне */
-.sec.stats>*+*{margin-top:0}
-.stats{align-items:start}
-.hist{height:44px;margin-bottom:var(--s2)}
-.hist div{background:rgba(255,255,255,.06);border-radius:6px}
-.hist div i{border-radius:6px;box-shadow:0 0 10px -2px var(--cy)}
-.hist div u{position:absolute;top:100%;left:0;right:0;margin-top:4px;text-align:center;text-decoration:none;font:500 10px "JetBrains Mono",monospace;color:var(--mu)}
-.hist div.t u{color:var(--rd);font-weight:700}
-
-#gear{font-size:22px;min-width:44px;text-decoration:none;text-align:center}
-.dream.sm{font-size:clamp(22px,6vw,30px)}
-.pills{display:flex;gap:var(--s1);flex-wrap:wrap;align-items:center}
-.pill{font:600 12px Manrope,sans-serif;border:1px solid var(--ln);border-radius:20px;padding:4px var(--s1);color:var(--mu)}
-.pill.ok{border-color:var(--cy);color:var(--cy);box-shadow:0 0 12px -3px var(--cy)}
+.lnk{min-height:44px;padding:0;background:none;border:0;color:var(--mu);text-decoration:underline;text-decoration-color:rgba(255,255,255,.25);text-underline-offset:5px;font:600 14px Manrope,sans-serif;cursor:pointer;text-align:left}
+.lnk:hover{color:var(--y)}
+.links{display:flex;flex-wrap:wrap;gap:4px var(--s2);align-items:center}
+.ct .links{justify-content:center}
+.sheets{display:grid;gap:12px;max-width:420px;margin-left:auto;margin-right:auto}
+.sheets .btn{width:100%;justify-content:space-between;min-height:56px}
+.sheets .btn.dim{border-style:dashed;color:var(--mu)}
+/* карточки и списки */
+.card{background:var(--sf);border:1px solid var(--ln);border-radius:24px;padding:22px;box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+.tight>*+*{margin-top:var(--s1)}
+.card+.card{margin-top:var(--s2)}
+.nm{font-size:18px;font-weight:700}.nm a{color:inherit}
+.chips{display:flex;gap:var(--s1);flex-wrap:wrap}
+.chip{font-size:11px;font-weight:700;letter-spacing:.12em;border:1px solid var(--ln);border-radius:20px;padding:3px 12px;color:var(--mu)}
+.chip.r{border-color:var(--rd);color:var(--rd)}.chip.c{border-color:var(--y);color:var(--y)}
+.li{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s1) var(--s2);padding:var(--s1) 0;min-height:60px;border-top:1px solid var(--ln);text-align:left}
+.li .g{flex:1 1 200px;min-width:0}.li.dn .g{text-decoration:line-through;color:var(--mu)}
+.li b.m{font:800 22px Manrope,sans-serif}
+.ct>.li,.ct>.ctrlist{max-width:480px;width:100%;margin-left:auto;margin-right:auto}
+.empty>*+*{margin-top:var(--s2)}
+.pills{display:flex;gap:var(--s1);flex-wrap:wrap;align-items:center;justify-content:center}
+.pill{font:700 12px Manrope,sans-serif;letter-spacing:.04em;border:1px solid var(--ln);border-radius:20px;padding:6px 14px;color:var(--mu)}
+.pill.ok{border-color:var(--y);color:var(--y);box-shadow:0 0 14px -3px var(--y)}
 .ctr{display:flex;align-items:center;gap:var(--s1)}
-.ctr b{min-width:40px;text-align:center;font:700 26px "JetBrains Mono",monospace}
-.cb{width:52px;height:52px;border-radius:14px;border:1px solid var(--ln);background:rgba(255,255,255,.04);color:var(--tx);font:700 24px Manrope,sans-serif;cursor:pointer;line-height:1}
+.ctr b{min-width:40px;text-align:center;font:800 26px Manrope,sans-serif}
+.cb{width:52px;height:52px;border-radius:50%;border:1px solid var(--ln);background:rgba(255,255,255,.04);color:var(--tx);font:700 24px Manrope,sans-serif;cursor:pointer;line-height:1}
 .cb:active{transform:scale(.94)}
-.cb.p{background:linear-gradient(135deg,#ff6b45,#e5392c);border:0;color:#fff;box-shadow:0 6px 16px rgba(229,57,44,.32)}
-.wkrow{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:var(--s1);align-items:center;min-height:48px;padding:var(--s1) 0;border-top:1px solid var(--ln)}
-.wkrow span,.wkrow b{font:500 15px "JetBrains Mono",monospace}
-.wkrow.h{border-top:0;min-height:0}.wkrow.h span{font-size:11px;color:var(--mu);letter-spacing:.08em}
-.wkrow .g{color:var(--cy);font-weight:700}
-.wkrow.t b{color:var(--rd)}.wkrow.f{opacity:.4}
-.li b.m{font:700 22px "JetBrains Mono",monospace}
-.stats span{line-height:1.4}
+.cb.p{background:var(--y);border:0;color:#1a1200;box-shadow:0 0 22px -4px rgba(255,180,0,.55)}
+/* неделя */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s2);text-align:center;align-items:start}
+.stats b{display:block;font:800 clamp(30px,9vw,44px)/1.1 Manrope,sans-serif;color:#fff;text-shadow:0 0 28px var(--gl)}
+.stats span{font-size:13px;color:var(--mu);line-height:1.4}
+.sec.stats>*+*{margin-top:0}
+.wkrow{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:var(--s1);align-items:center;min-height:50px;padding:var(--s1) 0;border-top:1px solid var(--ln)}
+.wkrow span,.wkrow b{font:600 15px Manrope,sans-serif}
+.wkrow.h{border-top:0;min-height:0}.wkrow.h span{font-size:11px;color:var(--mu);letter-spacing:.14em;text-transform:uppercase}
+.wkrow .g{color:var(--y);font-weight:800}
+.wkrow.t b{color:var(--y)}.wkrow.f{opacity:.4}
 .sec>.li+.li,.sec>.wkrow+.wkrow,.sec>.wkrow.h+.wkrow{margin-top:0}
 .sec>.wkrow.h{margin-top:var(--s2)}
+.quote{margin:0;border:0;padding:0;font:500 clamp(18px,4.8vw,22px)/1.55 Manrope,sans-serif;color:var(--mu);cursor:pointer}
+/* формы */
+.add{display:flex;gap:var(--s1);align-items:center}.add input{flex:1}.add .btn{min-height:52px;padding:0 22px}
+label{display:block;margin-bottom:var(--s1);font-size:14px;color:var(--mu)}
+input,select{font:inherit;font-size:17px;background:rgba(255,255,255,.04);color:var(--tx);border:1px solid var(--ln);border-radius:16px;padding:0 16px;min-height:54px;width:100%}
+select option{background:#17120a;color:var(--tx)}
+input[type=checkbox]{width:26px;min-height:26px;height:26px;accent-color:var(--y);flex:none}
+input:focus,select:focus,button:focus-visible,a:focus-visible{outline:2px solid var(--y);outline-offset:2px}
+#banner{display:none;border:1px solid rgba(255,90,74,.4);background:rgba(255,90,74,.08);border-radius:16px;padding:12px 16px;margin-bottom:var(--s2);color:var(--rd);font-weight:600;font-size:15px}
+/* навигация */
+#nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom,0px));width:min(92vw,440px);display:flex;gap:2px;padding:5px;background:rgba(18,14,8,.78);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid var(--ln);border-radius:999px;z-index:5;box-shadow:0 14px 40px -10px rgba(0,0,0,.8)}
+#nav button{flex:1;min-height:46px;border:0;border-radius:999px;background:none;color:var(--mu);font:800 11px Manrope,sans-serif;letter-spacing:.14em;cursor:pointer}
+#nav button.on{background:var(--y);color:#1a1200;box-shadow:0 0 24px -4px rgba(255,180,0,.6)}
+@media(min-width:820px){main{max-width:760px;padding-bottom:120px}#nav{bottom:auto;top:calc(24px + env(safe-area-inset-top,0px));width:420px}}
+dialog{background:#14100a;color:var(--tx);border:1px solid var(--ln);border-radius:28px;width:min(92vw,440px);padding:28px var(--s2) var(--s2);max-height:90vh;overflow:auto}
+dialog::backdrop{background:rgba(0,0,0,.75)}
+dialog h2{margin:0 0 var(--s1);font-size:22px;font-weight:800}
+dialog label{margin-top:var(--s2)}
+#derr{color:var(--rd);font-size:14px;min-height:24px;margin-top:var(--s2)}
+.acts{display:flex;flex-direction:column-reverse;align-items:stretch;gap:var(--s1);margin-top:var(--s1)}.acts .lnk{text-align:center;justify-content:center}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(88px + env(safe-area-inset-bottom,0px));background:#17120a;border:1px solid rgba(255,180,0,.5);border-radius:20px;padding:12px 20px;z-index:20;display:none;align-items:center;gap:var(--s2);width:min(92vw,560px);font-size:15px}
+@media(min-width:820px){#toast{bottom:var(--s2)}}
+#toast.on{display:flex}#toast button{background:none;border:0;color:var(--y);font:700 14px Manrope,sans-serif;min-height:44px;cursor:pointer;text-decoration:underline}
+@media(max-width:380px){.calc{grid-template-columns:1fr}.tc{display:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<div id="glow" aria-hidden="true"></div>
+<div id="glow" aria-hidden="true"></div><div id="grain" aria-hidden="true"></div>
 <main>
- <div class="top"><div class="rec m"><i></i>MONTAGE</div><div class="row" style="gap:var(--s1);flex-wrap:nowrap"><div class="tc m" id="tc">00:00:00</div><button class="lnk" id="rf" aria-label="Обновить приложение">↻</button><button class="lnk" id="gear" data-a="cfg" aria-label="Настройки">⋯</button></div></div>
+ <div class="top"><div class="rec"><i></i>KSH</div><div class="tr"><div class="tc" id="tc">00:00:00</div><button class="rb" id="rf" aria-label="Обновить приложение">↻</button><button class="rb" id="gear" data-a="cfg" aria-label="Настройки">⋯</button></div></div>
  <div id="banner"></div>
  <div id="view"></div>
 </main>
@@ -204,7 +188,7 @@ const head=(l,b,a)=>`<div class="lab"><span>${l}</span><button class="btn s p" d
 function streak(){let n=0,d=new Date();if((S.sec[dk(d)]||0)<600)d.setDate(d.getDate()-1);while((S.sec[dk(d)]||0)>=600){n++;d.setDate(d.getDate()-1)}return n}
 
 const LV=[[0,'Первый кадр'],[5,'Руки привыкают'],[25,'Появляется ритм'],[100,'Своя рука'],[300,'Профессиональный взгляд'],[1000,'Мастер']];
-const QP=[["МЫСЛЬ", "Тебе 19. Каждый час сейчас работает на тебя через пять лет."], ["МЫСЛЬ", "Талант не обязателен. Обязательно количество законченных роликов."], ["МЫСЛЬ", "Первый ролик будет плохим. Второй уже лучше. Третий уже можно показывать."], ["МЫСЛЬ", "Никто не придёт и не скажет «пора». Это решаешь ты."], ["МЫСЛЬ", "Один законченный ролик лучше десяти идеальных планов."], ["МЫСЛЬ", "Не нужно вдохновение. Просто включи таймер."], ["МЫСЛЬ", "Сегодняшний ты решает, кем будешь в 25."], ["МЫСЛЬ", "Страшно показывать работу? Покажи. После первого раза станет легче."], ["МЫСЛЬ", "Мастера тоже начинали с плохого монтажа."], ["МЫСЛЬ", "Пока ты сравниваешь себя с лучшими, они монтируют. Монтируй и ты."], ["МЫСЛЬ", "Усталость не причина не начинать. Начни на 10 минут и посмотри, что будет."], ["МЫСЛЬ", "Каждый ролик в портфолио говорит за тебя, даже когда тебя нет рядом."], ["ПРИЁМ МОНТАЖА", "Режь на движении: склейка в момент действия почти незаметна."], ["ПРИЁМ МОНТАЖА", "Звук составляет половину картинки. Плохой звук убивает хороший кадр."], ["ПРИЁМ МОНТАЖА", "Первые три секунды решают, досмотрят ли ролик."], ["ПРИЁМ МОНТАЖА", "Сомневаешься, нужен ли кадр? Убери его."], ["ПРИЁМ МОНТАЖА", "Отложи ролик на час, потом посмотри свежим глазом: лишнее видно сразу."], ["ПРИЁМ МОНТАЖА", "Посмотри ролик один раз без звука и один раз только на слух. Ошибки вылезут."], ["ПРИЁМ МОНТАЖА", "Склеивай по ритму музыки, а не по секундам на таймлайне."], ["ПРИЁМ МОНТАЖА", "J- и L-склейки: пусть звук следующего кадра начинается раньше картинки. Монтаж станет мягче."], ["ПРИЁМ МОНТАЖА", "Сначала ритм и смысл, потом цветокоррекция и эффекты."], ["ПРИЁМ МОНТАЖА", "Каждый эффект должен отвечать на вопрос «зачем». Нет ответа, убирай."], ["ПРИЁМ МОНТАЖА", "Учи горячие клавиши: секунда экономии умножается на тысячи склеек."], ["ПРИЁМ МОНТАЖА", "Называй дорожки и слои. Через месяц скажешь себе спасибо."], ["ПРИЁМ МОНТАЖА", "Сохраняй версии проекта: ролик_v1, ролик_v2. Откат спасает нервы."], ["ПРИЁМ МОНТАЖА", "Субтитры должны читаться без пауз: проверь скорость чтения."], ["ПРО ЗАКАЗЫ", "Перед работой спроси референс: один пример экономит три круга правок."], ["ПРО ЗАКАЗЫ", "Назови заказчику число правок заранее. Бесконечных правок не бывает."], ["ПРО ЗАКАЗЫ", "Покажи «до и после»: этот формат продаёт монтаж лучше слов."], ["ПРО ЗАКАЗЫ", "Не пропадай: напиши заказчику статус, даже если всё идёт по плану."], ["ПРО ЗАКАЗЫ", "Не занижай цену до нуля: бесплатную работу ценят меньше."], ["ПРО ЗАКАЗЫ", "Предоплата защищает и тебя, и заказчика."], ["ПРО ЗАКАЗЫ", "Лучший способ найти заказчика: сделать ролик для того, кто ещё не просил."], ["ПРО ЗАКАЗЫ", "Один отзыв довольного заказчика стоит больше десяти постов о себе."], ["ПРО ЗАКАЗЫ", "Ответь сегодня на одно сообщение, которое откладывал. Заказы прячутся там."], ["ДИСЦИПЛИНА", "Запиши время монтажа в календарь. Что записано, то и происходит."], ["ДИСЦИПЛИНА", "Выключи уведомления на время монтажа. Лента подождёт."], ["ДИСЦИПЛИНА", "Лучше 30 минут каждый день, чем 5 часов раз в месяц."], ["ДИСЦИПЛИНА", "Начни с самого простого кадра: инерция потянет дальше."], ["ДИСЦИПЛИНА", "В конце дня подведи итог: что сдал, что осталось. Завтра стартуешь легче."]];
+const QP=[["МЫСЛЬ", "Каждый час сейчас работает на тебя через пять лет."], ["МЫСЛЬ", "Талант не обязателен. Обязательно количество законченных роликов."], ["МЫСЛЬ", "Первый ролик будет плохим. Второй уже лучше. Третий уже можно показывать."], ["МЫСЛЬ", "Никто не придёт и не скажет «пора». Это решаешь ты."], ["МЫСЛЬ", "Один законченный ролик лучше десяти идеальных планов."], ["МЫСЛЬ", "Не нужно вдохновение. Просто включи таймер."], ["МЫСЛЬ", "Сегодняшний ты решает, кем будешь в 25."], ["МЫСЛЬ", "Страшно показывать работу? Покажи. После первого раза станет легче."], ["МЫСЛЬ", "Мастера тоже начинали с плохого монтажа."], ["МЫСЛЬ", "Пока ты сравниваешь себя с лучшими, они монтируют. Монтируй и ты."], ["МЫСЛЬ", "Усталость не причина не начинать. Начни на 10 минут и посмотри, что будет."], ["МЫСЛЬ", "Каждый ролик в портфолио говорит за тебя, даже когда тебя нет рядом."], ["ПРИЁМ МОНТАЖА", "Режь на движении: склейка в момент действия почти незаметна."], ["ПРИЁМ МОНТАЖА", "Звук составляет половину картинки. Плохой звук убивает хороший кадр."], ["ПРИЁМ МОНТАЖА", "Первые три секунды решают, досмотрят ли ролик."], ["ПРИЁМ МОНТАЖА", "Сомневаешься, нужен ли кадр? Убери его."], ["ПРИЁМ МОНТАЖА", "Отложи ролик на час, потом посмотри свежим глазом: лишнее видно сразу."], ["ПРИЁМ МОНТАЖА", "Посмотри ролик один раз без звука и один раз только на слух. Ошибки вылезут."], ["ПРИЁМ МОНТАЖА", "Склеивай по ритму музыки, а не по секундам на таймлайне."], ["ПРИЁМ МОНТАЖА", "J- и L-склейки: пусть звук следующего кадра начинается раньше картинки. Монтаж станет мягче."], ["ПРИЁМ МОНТАЖА", "Сначала ритм и смысл, потом цветокоррекция и эффекты."], ["ПРИЁМ МОНТАЖА", "Каждый эффект должен отвечать на вопрос «зачем». Нет ответа, убирай."], ["ПРИЁМ МОНТАЖА", "Учи горячие клавиши: секунда экономии умножается на тысячи склеек."], ["ПРИЁМ МОНТАЖА", "Называй дорожки и слои. Через месяц скажешь себе спасибо."], ["ПРИЁМ МОНТАЖА", "Сохраняй версии проекта: ролик_v1, ролик_v2. Откат спасает нервы."], ["ПРИЁМ МОНТАЖА", "Субтитры должны читаться без пауз: проверь скорость чтения."], ["ПРО ЗАКАЗЫ", "Перед работой спроси референс: один пример экономит три круга правок."], ["ПРО ЗАКАЗЫ", "Назови заказчику число правок заранее. Бесконечных правок не бывает."], ["ПРО ЗАКАЗЫ", "Покажи «до и после»: этот формат продаёт монтаж лучше слов."], ["ПРО ЗАКАЗЫ", "Не пропадай: напиши заказчику статус, даже если всё идёт по плану."], ["ПРО ЗАКАЗЫ", "Не занижай цену до нуля: бесплатную работу ценят меньше."], ["ПРО ЗАКАЗЫ", "Предоплата защищает и тебя, и заказчика."], ["ПРО ЗАКАЗЫ", "Лучший способ найти заказчика: сделать ролик для того, кто ещё не просил."], ["ПРО ЗАКАЗЫ", "Один отзыв довольного заказчика стоит больше десяти постов о себе."], ["ПРО ЗАКАЗЫ", "Ответь сегодня на одно сообщение, которое откладывал. Заказы прячутся там."], ["ДИСЦИПЛИНА", "Запиши время монтажа в календарь. Что записано, то и происходит."], ["ДИСЦИПЛИНА", "Выключи уведомления на время монтажа. Лента подождёт."], ["ДИСЦИПЛИНА", "Лучше 30 минут каждый день, чем 5 часов раз в месяц."], ["ДИСЦИПЛИНА", "Начни с самого простого кадра: инерция потянет дальше."], ["ДИСЦИПЛИНА", "В конце дня подведи итог: что сдал, что осталось. Завтра стартуешь легче."]];
 let qo=0;
 function qBox(){const st=streak(),s=todaySec(),g=S.set.goalMin*60,h=new Date().getHours(),C=[];
  if(S.timer)C.push(['ТВОЙ ПУТЬ','Идёт запись. Каждая минута сейчас остаётся с тобой.']);
@@ -226,18 +210,22 @@ const V={
 today(){const se=S.set,t=tod(),g=se.goalMin*60,s=todaySec(),mg=se.msgGoal,m=msgs(t),dd=S.done[t]||{},ds=dsum(t),dl=se.dreamDate,
  left=dl?Math.ceil((new Date(dl+'T00:00')-new Date())/864e5):null,ok=[s>=g,m>=mg,ds>0],n=ok.filter(Boolean).length;
  const stp=se.doneTypes.map((tp,i)=>`<div class="li"><div class="g"><b>${esc(tp)}</b></div><div class="ctr"><button class="cb" data-a="inc" data-k="${i}" data-n="-1" aria-label="Минус">−</button><b>${dd[tp]||0}</b><button class="cb p" data-a="inc" data-k="${i}" data-n="1" aria-label="Плюс">+</button></div></div>`).join('');
- const sh=[['leads','Лиды'],['mail','Рассылки'],['money','Заработок']].map(([k,l])=>se.sheets[k]?`<a class="lnk" href="${esc(se.sheets[k])}" target="_blank" rel="noopener">${l} ↗</a>`:`<button class="lnk" data-a="sheet" data-k="${k}">+ ${l}: вставить ссылку</button>`).join('');
- return `<section class="sec"><div class="lab" data-a="set" style="cursor:pointer">${left===null?'МОЯ ЦЕЛЬ · ЗАДАЙ ДАТУ ›':left>0?'МОЯ ЦЕЛЬ · ЕЩЁ '+left+' ДН.':'МОЯ ЦЕЛЬ · СРОК ВЫШЕЛ, ОБНОВИ ›'}</div><h1 class="dream sm" data-a="set">${esc(se.dream||'Нажми и напиши, кем ты хочешь стать')}</h1>
-  <div class="pills"><span class="pill ${ok[0]?'ok':''}">${ok[0]?'✓':'○'} Часы</span><span class="pill ${ok[1]?'ok':''}">${ok[1]?'✓':'○'} Сообщения</span><span class="pill ${ok[2]?'ok':''}">${ok[2]?'✓':'○'} Сделано</span><span class="mu2" style="align-self:center">${n} из 3</span></div></section>
- <section class="sec ${S.timer?'live':''}" id="tpn"><div class="lab row"><span>ЧАСЫ МОНТАЖА</span><span>${S.timer?'● ИДЁТ ЗАПИСЬ':''}</span></div><div class="big" id="tm">0:00:00</div><p class="mu2" id="rem"></p><div class="bar"><i id="tb"></i></div>
+ const sh=[['leads','Лиды'],['mail','Рассылки'],['money','Заработок']].map(([k,l])=>se.sheets[k]?`<a class="btn" href="${esc(se.sheets[k])}" target="_blank" rel="noopener"><span class="tx"><b>${l}</b></span><span class="ar">↗</span></a>`:`<button class="btn dim" data-a="sheet" data-k="${k}"><span class="tx"><b>${l}</b><small>вставить ссылку</small></span><span class="ar">+</span></button>`).join('');
+ return `<section class="sec hero ct ${S.timer?'live':''}" id="tpn">
+  <div class="eye" data-a="set" style="cursor:pointer">${left===null?'Моя цель · задай дату ›':left>0?'Моя цель · ещё '+left+' дн.':'Моя цель · срок вышел, обнови ›'}</div>
+  <h1 class="dream" data-a="set">${esc(se.dream||'Нажми и напиши, кем ты хочешь стать')}</h1>
+  <div class="eye st" style="margin-top:56px">Часы монтажа${S.timer?' • идёт запись':''}</div>
+  <div class="big" id="tm" style="margin-top:12px">0:00:00</div>
+  <p class="mu2" id="rem"></p><div class="bar"><i id="tb"></i></div>
   <button class="btn p go" id="cta" data-a="timer"><span class="ic" id="cic"></span><span class="tx"><b id="ct">Начать монтаж</b><small id="cs"></small></span><span class="ar">›</span></button>
-  <div class="links"><button class="lnk" data-a="tedit">Поправить время</button><button class="lnk" data-a="treset">Сбросить</button><button class="lnk" data-a="tgoal">Цель ${hm(g)} ›</button></div></section>
- <section class="sec"><div class="lab row"><span>СООБЩЕНИЯ СЕГОДНЯ</span><span>${m>=mg?'✓ ЦЕЛЬ':''}</span></div><div class="big sm">${m}<small> из ${mg}</small></div><div class="bar"><i style="width:${Math.min(100,m/mg*100)}%"></i></div>
+  <div class="links"><button class="lnk" data-a="tedit">Поправить время</button><button class="lnk" data-a="treset">Сбросить</button><button class="lnk" data-a="tgoal">Цель ${hm(g)} ›</button></div>
+  <div class="pills"><span class="pill ${ok[0]?'ok':''}">${ok[0]?'✓':'○'} Часы</span><span class="pill ${ok[1]?'ok':''}">${ok[1]?'✓':'○'} Сообщения</span><span class="pill ${ok[2]?'ok':''}">${ok[2]?'✓':'○'} Сделано</span><span class="mu2">${n} из 3</span></div></section>
+ <section class="sec ct"><div class="lab"><span>Сообщения сегодня</span>${m>=mg?'<span>✓ цель</span>':''}</div><div class="big sm">${m}<small> из ${mg}</small></div><div class="bar"><i style="width:${Math.min(100,m/mg*100)}%"></i></div>
   <button class="btn p" data-a="msg" data-n="1">Отправил сообщение · стало ${m+1} из ${mg}</button>
   <div class="links"><button class="lnk" data-a="msg" data-n="-1">−1</button><button class="lnk" data-a="msg" data-n="5">+5 сразу</button><button class="lnk" data-a="msgset">Поправить число</button><button class="lnk" data-a="msggoal">Цель ${mg} ›</button></div></section>
- <section class="sec"><div class="lab row"><span>ЧТО СДЕЛАНО СЕГОДНЯ · ${ds}</span><button class="lnk" data-a="types">Изменить список</button></div>${stp}</section>
- <section class="sec"><div class="lab">МОИ ТАБЛИЦЫ</div><div class="links">${sh}</div></section>
- <section class="sec">${qBox()}</section>`},
+ <section class="sec ct"><div class="lab"><span>Сделано сегодня · ${ds}</span></div>${stp}<div class="links"><button class="lnk" data-a="types">Изменить список</button></div></section>
+ <section class="sec ct"><div class="lab">Мои таблицы</div><div class="sheets">${sh}</div></section>
+ <section class="sec ct">${qBox()}</section>`},
 proj(){const a=S.projects.map((p,i)=>[p,i]),act=a.filter(([p])=>p.st<3).sort((x,y)=>(x[0].dl||'9')>(y[0].dl||'9')?1:-1),dn=a.filter(([p])=>p.st===3).reverse();
  const card=([p,i])=>`<article class="card tight"><div class="row"><b class="nm">${nm(p)}</b><button class="lnk" data-a="del" data-l="projects" data-i="${i}">Удалить</button></div><div class="chips"><span class="chip c">${ST[p.st]}</span><span class="chip">${esc(p.k).toUpperCase()}</span>${p.dl?`<span class="chip ${p.dl<tod()?'r':''}">ДЕДЛАЙН ${fmtD(p.dl)}${p.dl<tod()?' · ПРОСРОЧЕН':''}</span>`:''}</div><div><button class="btn" data-a="nx" data-l="projects" data-i="${i}">${p.st===2?`Сдать: станет роликом №${dn.length+1} в портфолио`:`Перевести в «${ST[p.st+1]}» · этап ${p.st+2} из 4`}</button></div></article>`;
  return `<section class="sec">${hd('В РАБОТЕ · '+act.length,act.length?'<button class="btn" data-a="addp">+ Проект</button>':'')}${act.map(card).join('')||`<div class="empty"><p>Пока ни одного проекта. Даже учебный ролик запустит портфолио.</p><button class="btn p" data-a="addp">Добавить первый проект — цель ${S.set.clipGoal} в неделю</button></div>`}</section>
@@ -264,12 +252,12 @@ cfg(){const se=S.set,z=se.sheets,pt=pushText(),on=PS().on;
  <section class="sec"><div class="lab">МОЯ ЦЕЛЬ</div><div class="li"><div class="g"><b>${esc(se.dream||'Не задана')}</b><br><span class="mu2">${se.dreamDate?'до '+fmtD(se.dreamDate):'дата не выбрана'}${se.why?' · «'+esc(se.why)+'»':''}</span></div><button class="lnk" data-a="set">Изменить</button></div></section>
  <section class="sec"><div class="lab">МОИ ТАБЛИЦЫ</div><div class="li"><div class="g"><span class="mu2">Лиды: ${z.leads?'есть':'нет ссылки'} · Рассылки: ${z.mail?'есть':'нет ссылки'} · Заработок: ${z.money?'есть':'нет ссылки'}</span></div><button class="lnk" data-a="sheets">Изменить</button></div></section>
  <section class="sec"><div class="lab">ОБЛАКО</div>${cloudBox()}</section>
- <section class="sec"><div class="lab">ДАННЫЕ И ВИД</div><p class="mu2">${backupNote()}</p><div class="links"><button class="lnk" data-a="exp">Скачать копию данных</button><button class="lnk" data-a="imp">Загрузить копию</button><button class="lnk" data-a="thm">Светлая / тёмная тема</button></div></section>`},
+ <section class="sec"><div class="lab">ДАННЫЕ И ВИД</div><p class="mu2">${backupNote()}</p><div class="links"><button class="lnk" data-a="exp">Скачать копию данных</button><button class="lnk" data-a="imp">Загрузить копию</button></div></section>`},
 idea(){const L=(k,e)=>S[k].map((x,i)=>`<div class="li ${x.done?'dn':''}"><input type="checkbox" data-a="tog" data-l="${k}" data-i="${i}" ${x.done?'checked':''} aria-label="Отметить"><div class="g">${esc(x.t)}</div><button class="lnk" data-a="del" data-l="${k}" data-i="${i}">Удалить</button></div>`).join('')||`<p class="mu2">${e}</p>`,cnt=k=>S[k].filter(x=>x.done).length+'/'+S[k].length;
  return `<section class="sec"><div class="lab">ИДЕИ И РЕФЕРЕНСЫ · ${cnt('ideas')}</div>${L('ideas','Пока пусто. Увидел монтаж, который зацепил? Впиши его ниже, и он будет ждать тебя здесь.')}<div class="add"><input data-add="ideas" placeholder="Что хочешь повторить?" enterkeyhint="done"><button class="btn" data-a="addi" data-k="ideas">Добавить</button></div></section>
  <section class="sec"><div class="lab">ПЛАН МЕСЯЦА · ${cnt('goals')}</div>${L('goals','Пока пусто. Впиши шаги из своего руководства, чтобы отмечать их по мере выполнения.')}<div class="add"><input data-add="goals" placeholder="Шаг плана…" enterkeyhint="done"><button class="btn" data-a="addi" data-k="goals">Добавить</button></div></section>`}
 };
-function render(){$('#nav').innerHTML=TABS.map(([k,l])=>`<button class="${k===tab?'on':''}" data-t="${k}">${l}</button>`).join('');$('#view').innerHTML=V[tab]();tick();banner();calc();polish($('#view'));fitNav();$('#glow').classList.toggle('rec',!!S.timer)}
+function render(){$('#nav').innerHTML=TABS.map(([k,l])=>`<button class="${k===tab?'on':''}" data-t="${k}">${l}</button>`).join('');$('#view').innerHTML=V[tab]();tick();banner();calc();polish($('#view'));fitNav();$('#glow').classList.toggle('rec',!!S.timer);document.body.classList.toggle('live',!!S.timer)}
 function tick(){const n=new Date();$('#tc').textContent=pad(n.getHours())+':'+pad(n.getMinutes())+':'+pad(n.getSeconds());const s=todaySec(),g=S.set.goalMin*60;
  if($('#tot'))$('#tot').textContent=hm(totSec());
  if($('#tm')){$('#tm').textContent=hm(s);$('#tb').style.width=Math.min(100,s/g*100)+'%';const l=g-s;
@@ -316,7 +304,7 @@ const IC={play:'<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentCo
 function polish(root){(root||document).querySelectorAll('.btn:not([data-p])').forEach(b=>{b.dataset.p=1;if(b.children.length)return;const m=b.textContent.trim().split(/ [—·] /);if(m.length<2)return;
  const ic=b.classList.contains('p')?`<span class="ic">${b.id==='cOk'?IC.check:IC.plus}</span>`:'';
  b.innerHTML=ic+'<span class="tx"><b>'+esc(m[0])+'</b><small>'+esc(m.slice(1).join(' · '))+'</small></span><span class="ar">›</span>'})}
-function fitNav(){const n=$('#nav');n.style.bottom='0px';const g=Math.round(innerHeight-n.getBoundingClientRect().bottom);if(g>4&&g<160)n.style.bottom=(-g)+'px'}
+function fitNav(){return;const n=$('#nav');n.style.bottom='0px';const g=Math.round(innerHeight-n.getBoundingClientRect().bottom);if(g>4&&g<160)n.style.bottom=(-g)+'px'}
 addEventListener('resize',fitNav);addEventListener('orientationchange',()=>setTimeout(fitNav,300));
 const VAPID="BEfixBb3S02vUh-E33xC2AON96voH7liNqYfdvZen5xoKrjfB6yaSy0E8rzC06DB2k7pb03W9YwV9BwNz8exJ40";
 const EV={30:'Каждые 30 минут',60:'Каждый час',120:'Каждые 2 часа',180:'Каждые 3 часа'};
